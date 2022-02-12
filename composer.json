@@ -1,0 +1,43 @@
+{
+  "name": "kagg/compatibility",
+  "description": "KAGG Compatibility",
+  "license": "GPL-2.0",
+  "keywords": [
+    "compatibility",
+    "PHP 8.1"
+  ],
+  "homepage": "https://wordpress.org/plugins/kagg-compatibility/",
+  "type": "wordpress-plugin",
+  "authors": [
+    {
+      "name": "KAGG Design",
+      "email": "info@kagg.eu",
+      "homepage": "https://kagg.eu/en/"
+    }
+  ],
+  "support": {
+    "issues": "https://wordpress.org/support/plugin/kagg-compatibility"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "platform": {
+      "php": "5.6"
+    }
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master",
+    "squizlabs/php_codesniffer": "^3.6",
+    "phpcompatibility/php-compatibility": "^9.3",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "wp-coding-standards/wpcs": "^2.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "KAGG\\Compatibility\\": "src/php"
+    }
+  },
+  "scripts": {
+    "phpcs": "phpcs --colors --standard=phpcs.xml"
+  }
+}
