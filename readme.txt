@@ -8,16 +8,18 @@ Requires PHP: 8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Blocks PHP 8.1 deprecation messages from WordPress core, WooCommerce, Jetpack and other plugins.
+The plugin blocks PHP 8.1 deprecation messages from WordPress core, WooCommerce, Jetpack and other plugins.
 
 == Description ==
 
 [WordPress is not fully compatible with PHP 8.0 or 8.1](https://make.wordpress.org/core/2022/01/10/wordpress-5-9-and-php-8-0-8-1/). All remaining known PHP 8.1 issues are deprecation notices.
 
-The same is related to many popular plugins as WooCommerce, Jetpack and many others. Mostly. they produce deprecation notices from the Action Scheduler library.
+The same is related to many popular plugins such as WooCommerce, Jetpack and others. Mainly, they produce deprecation notices from the Action Scheduler library.
 
 = Features =
 * Plugin blocks all deprecation notices from WordPress core, WooCommerce, JetPack and many others using Action Scheduler library.
+* Plugin filters out errors from these libraries only. Errors produced by the user code are not blocked, which helps to debug.
+* During activation, plugin installs a mu-plugin `kagg-compatibility-error-handler.php` into the `/wp-content/mu-plugins/` folder. It contains the error handler, which loads earlier than any plugin or theme.
 
 == Plugin Support ==
 
@@ -30,7 +32,7 @@ The same is related to many popular plugins as WooCommerce, Jetpack and many oth
 
 = Can I contribute? =
 
-Yes you can!
+Yes, you can!
 
 * Join in on our [GitHub repository](https://github.com/kagg-design/kagg-compatibility)
 
