@@ -41,6 +41,6 @@
     }
   },
   "scripts": {
-    "phpcs": "phpcs --colors --standard=phpcs.xml"
+    "phpcs": "vendor/bin/phpcs --colors"
   }
 }
