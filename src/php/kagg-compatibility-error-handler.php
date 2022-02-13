@@ -50,6 +50,18 @@ class ErrorHandler {
 	}
 
 	/**
+	 * Init class hooks.
+	 *
+	 * @return void
+	 */
+	private function init_hooks() {
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
+		set_error_handler( [ $this, 'error_handler' ] );
+
+		add_action( 'admin_head', [ $this, 'admin_head' ] );
+	}
+
+	/**
 	 * Error handler.
 	 *
 	 * @param int    $level   Error level.
@@ -80,13 +92,19 @@ class ErrorHandler {
 	}
 
 	/**
-	 * Init class hooks.
+	 * Clear error caused by xdebug with PHP 8.1.
+	 * This error leads to adding .php-error class (2em margin-top) to the #adminmenuwrap.
 	 *
 	 * @return void
+	 * @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection
 	 */
-	private function init_hooks() {
-		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
-		set_error_handler( [ $this, 'error_handler' ] );
+	public function admin_head() {
+		$error_get_last = error_get_last();
+
+		if ( 'xdebug://debug-eval' === $error_get_last['file'] ) {
+			// phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.error_clear_lastFound
+			error_clear_last();
+		}
 	}
 }
 
