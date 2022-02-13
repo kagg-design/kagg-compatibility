@@ -33,7 +33,8 @@ class ErrorHandler {
 		$this->dirs = [
 			ABSPATH . WPINC,
 			ABSPATH . 'wp-admin',
-			'/vendor/woocommerce/action-scheduler',
+			'/vendor/woocommerce/action-scheduler', // Action Scheduler.
+			'/vendor/rmccue/requests', // used in WP-CLI.
 		];
 
 		$this->dirs = array_map(
