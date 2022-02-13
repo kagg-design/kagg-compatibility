@@ -51,15 +51,15 @@ class ErrorHandler {
 	/**
 	 * Error handler.
 	 *
-	 * @param $level
-	 * @param $message
-	 * @param $file
-	 * @param $line
+	 * @param int    $level   Error level.
+	 * @param string $message Error message.
+	 * @param string $file    File produced an error.
+	 * @param int    $line    Line number.
 	 *
 	 * @return bool
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function error_handler(  $level, $message, $file, $line ) {
+	public function error_handler( $level, $message, $file, $line ) {
 		if ( E_DEPRECATED !== $level ) {
 			// Use standard error handler.
 			return false;
