@@ -4,7 +4,10 @@
   "license": "GPL-2.0",
   "keywords": [
     "compatibility",
-    "PHP 8.1"
+    "PHP 8.1",
+    "development",
+    "deprecation",
+    "notice"
   ],
   "homepage": "https://wordpress.org/plugins/kagg-compatibility/",
   "type": "wordpress-plugin",

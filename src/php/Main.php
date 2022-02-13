@@ -20,14 +20,14 @@ class Main {
 	const ERROR_HANDLER_FILENAME = 'kagg-compatibility-error-handler.php';
 
 	/**
-	 * Error handler source path and filename.
+	 * Error handler source path.
 	 *
 	 * @var string
 	 */
 	private $error_handler_source;
 
 	/**
-	 * Error handler destination path and filename.
+	 * Error handler destination path.
 	 *
 	 * @var string
 	 */
