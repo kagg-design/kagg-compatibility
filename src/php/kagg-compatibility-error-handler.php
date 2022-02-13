@@ -101,6 +101,10 @@ class ErrorHandler {
 	public function admin_head() {
 		$error_get_last = error_get_last();
 
+		if ( ! isset( $error_get_last['file'] ) ) {
+			return;
+		}
+
 		if ( 'xdebug://debug-eval' === $error_get_last['file'] ) {
 			// phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.error_clear_lastFound
 			error_clear_last();
