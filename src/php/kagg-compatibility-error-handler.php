@@ -31,17 +31,16 @@ class ErrorHandler {
 	 */
 	public function init() {
 		$this->dirs = [
-			ABSPATH . WPINC,
-			ABSPATH . 'wp-admin',
-			'/vendor/woocommerce/action-scheduler', // Action Scheduler.
-			'/vendor/rmccue/requests', // used in WP-CLI.
+			ABSPATH . WPINC . '/', // WordPress wp-includes.
+			ABSPATH . 'wp-admin/', // WordPress wp-admin.
+			'/action-scheduler/', // Action Scheduler.
+			'/vendor/rmccue/requests/', // Requests library used in WP-CLI.
+			'/plugins/woocommerce/', // WooCommerce, many files.
 		];
 
 		$this->dirs = array_map(
 			static function( $dir ) {
-				return trailingslashit(
-					str_replace( DIRECTORY_SEPARATOR, '/', $dir )
-				);
+				return str_replace( DIRECTORY_SEPARATOR, '/', $dir );
 			},
 			$this->dirs
 		);
