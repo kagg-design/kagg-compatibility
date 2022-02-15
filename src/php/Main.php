@@ -98,24 +98,15 @@ class Main {
 	 * @return void
 	 */
 	public function activation_hook() {
-		$result     = false;
-		$filesystem = $this->get_filesystem_direct();
-
-		if ( $filesystem ) {
-			$result = $filesystem->copy(
-				$this->error_handler_source,
-				$this->error_handler_destination,
-				true
-			);
+		if ( $this->copy_error_handler() ) {
+			return;
 		}
 
-		if ( ! $result ) {
-			$this->load_plugin_textdomain();
-			$this->admin_notices->add_notice(
-				__( 'Cannot install mu-plugin with error handler.', 'kagg-compatibility' ),
-				'notice notice-error'
-			);
-		}
+		$this->load_plugin_textdomain();
+		$this->admin_notices->add_notice(
+			__( 'Cannot install mu-plugin with error handler.', 'kagg-compatibility' ),
+			'notice notice-error'
+		);
 	}
 
 	/**
@@ -124,24 +115,21 @@ class Main {
 	 * @return void
 	 */
 	public function deactivation_hook() {
-		$result     = false;
-		$filesystem = $this->get_filesystem_direct();
-
-		if ( $filesystem ) {
-			$result = $filesystem->delete( $this->error_handler_destination );
+		if ( $this->delete_error_handler() ) {
+			return;
 		}
 
-		if ( ! $result ) {
-			$this->load_plugin_textdomain();
-			$this->admin_notices->add_notice(
-				__( 'Cannot delete mu-plugin with error handler.', 'kagg-compatibility' ),
-				'notice notice-error'
-			);
-		}
+		$this->load_plugin_textdomain();
+		$this->admin_notices->add_notice(
+			__( 'Cannot delete mu-plugin with error handler.', 'kagg-compatibility' ),
+			'notice notice-error'
+		);
 	}
 
 	/**
 	 * Load plugin text domain.
+	 *
+	 * @return void
 	 */
 	public function load_plugin_textdomain() {
 		global $l10n;
@@ -179,5 +167,43 @@ class Main {
 		}
 
 		return $wp_filesystem;
+	}
+
+	/**
+	 * Copy error handler file to the mu-plugins folder.
+	 *
+	 * @return bool
+	 */
+	private function copy_error_handler() {
+		$filesystem = $this->get_filesystem_direct();
+
+		if ( ! $filesystem ) {
+			return false;
+		}
+
+		if ( ! $filesystem->is_dir( WPMU_PLUGIN_DIR ) && ! $filesystem->mkdir( WPMU_PLUGIN_DIR ) ) {
+			return false;
+		}
+
+		return $filesystem->copy(
+			$this->error_handler_source,
+			$this->error_handler_destination,
+			true
+		);
+	}
+
+	/**
+	 * Delete error handler file.
+	 *
+	 * @return bool
+	 */
+	private function delete_error_handler() {
+		$filesystem = $this->get_filesystem_direct();
+
+		if ( ! $filesystem ) {
+			return false;
+		}
+
+		return $filesystem->delete( $this->error_handler_destination );
 	}
 }

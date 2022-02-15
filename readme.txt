@@ -3,7 +3,7 @@ Contributors: kaggdesign
 Tags: compatibility, PHP 8.1, development, deprecation, notice
 Requires at least: 5.9
 Tested up to: 5.9
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -37,6 +37,9 @@ Yes, you can!
 * Join in on our [GitHub repository](https://github.com/kagg-design/kagg-compatibility)
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed creation of the mu-plugin folder if it does not exist.
 
 = 1.0.0 =
 * Initial release
