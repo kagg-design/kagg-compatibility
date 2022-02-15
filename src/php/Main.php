@@ -7,7 +7,7 @@
 
 namespace KAGG\Compatibility;
 
-use WP_Filesystem_Direct;
+use WP_Filesystem_Base;
 
 /**
  * Class Main.
@@ -97,7 +97,7 @@ class Main {
 	 */
 	public function activation_hook() {
 		$result     = false;
-		$filesystem = $this->get_filesystem();
+		$filesystem = $this->get_filesystem_direct();
 
 		if ( $filesystem ) {
 			$result = $filesystem->copy(
@@ -122,7 +122,7 @@ class Main {
 	 */
 	public function deactivation_hook() {
 		$result     = false;
-		$filesystem = $this->get_filesystem();
+		$filesystem = $this->get_filesystem_direct();
 
 		if ( $filesystem ) {
 			$result = $filesystem->delete( $this->error_handler_destination );
@@ -139,33 +139,22 @@ class Main {
 	/**
 	 * Get direct filesystem.
 	 *
-	 * @return WP_Filesystem_Direct|null
+	 * @todo Add support for other filesystems.
+	 *
+	 * @return WP_Filesystem_Base|null
 	 */
-	private function get_filesystem() {
+	private function get_filesystem_direct() {
+
 		global $wp_filesystem;
 
-		$filesystem = $wp_filesystem;
-
-		// @todo add support for other filesystems.
-		if ( ! $filesystem instanceof WP_Filesystem_Direct ) {
-			$method            = 'direct';
-			$class_file_prefix = ABSPATH . 'wp-admin/includes/class-wp-filesystem-';
-			$abstraction_file  = apply_filters( 'filesystem_method_file', $class_file_prefix . $method . '.php', $method );
-
-			if ( ! file_exists( $abstraction_file ) ) {
-				return null;
-			}
-
-			require_once $class_file_prefix . 'base.php';
-			require_once $abstraction_file;
-
-			if ( get_filesystem_method() !== 'direct' ) {
-				return null;
-			}
-
-			$filesystem = new WP_Filesystem_Direct( null );
+		if ( ! $wp_filesystem && ! WP_Filesystem() ) {
+			return null;
 		}
 
-		return $filesystem;
+		if ( 'direct' !== $wp_filesystem->method ) {
+			return null;
+		}
+
+		return $wp_filesystem;
 	}
 }
