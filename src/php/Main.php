@@ -88,6 +88,8 @@ class Main {
 	private function hooks() {
 		register_activation_hook( KAGG_COMPATIBILITY_FILE, [ $this, 'activation_hook' ] );
 		register_deactivation_hook( KAGG_COMPATIBILITY_FILE, [ $this, 'deactivation_hook' ] );
+
+		add_action( 'plugins_loaded', [ $this, 'load_plugin_textdomain' ] );
 	}
 
 	/**
@@ -108,6 +110,7 @@ class Main {
 		}
 
 		if ( ! $result ) {
+			$this->load_plugin_textdomain();
 			$this->admin_notices->add_notice(
 				__( 'Cannot install mu-plugin with error handler.', 'kagg-compatibility' ),
 				'notice notice-error'
@@ -129,11 +132,31 @@ class Main {
 		}
 
 		if ( ! $result ) {
+			$this->load_plugin_textdomain();
 			$this->admin_notices->add_notice(
 				__( 'Cannot delete mu-plugin with error handler.', 'kagg-compatibility' ),
 				'notice notice-error'
 			);
 		}
+	}
+
+	/**
+	 * Load plugin text domain.
+	 */
+	public function load_plugin_textdomain() {
+		global $l10n;
+
+		$domain = 'kagg-compatibility';
+
+		if ( isset( $l10n[ $domain ] ) ) {
+			return;
+		}
+
+		load_plugin_textdomain(
+			$domain,
+			false,
+			dirname( plugin_basename( KAGG_COMPATIBILITY_FILE ) ) . '/languages/'
+		);
 	}
 
 	/**
