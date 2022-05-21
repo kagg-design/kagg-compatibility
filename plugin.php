@@ -10,7 +10,7 @@
  * Plugin Name:       KAGG Compatibility
  * Plugin URI:        https://wordpress.org/plugins/kagg-compatibility/
  * Description:       Blocks PHP 8.1 deprecation messages from WordPress core, WooCommerce, Jetpack and other plugins.
- * Version:           1.0.1
+ * Version:           1.1.0
  * Requires at least: 5.9
  * Requires PHP:      8.1
  * Author:            KAGG Design
@@ -36,7 +36,7 @@ if ( defined( 'KAGG_COMPATIBILITY_VERSION' ) ) {
 /**
  * Plugin version.
  */
-define( 'KAGG_COMPATIBILITY_VERSION', '1.0.1' );
+define( 'KAGG_COMPATIBILITY_VERSION', '1.1.0' );
 
 /**
  * Path to the plugin dir.
