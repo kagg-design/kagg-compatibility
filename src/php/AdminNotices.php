@@ -17,7 +17,7 @@ class AdminNotices {
 	 *
 	 * @var array
 	 */
-	private $notices = [];
+	private array $notices = [];
 
 	/**
 	 * AdminNotices constructor.
@@ -29,15 +29,15 @@ class AdminNotices {
 	/**
 	 * Add admin notice.
 	 *
-	 * @param string $message Message to show.
-	 * @param string $class   Message class: notice notice-success notice-error notice-warning notice-info
-	 *                        is-dismissible.
-	 * @param array  $options Notice options.
+	 * @param string $message    Message to show.
+	 * @param string $class_name Message class: notice notice-success notice-error notice-warning notice-info
+	 *                           is-dismissible.
+	 * @param array  $options    Notice options.
 	 */
-	public function add_notice( $message, $class = 'notice', $options = [] ) {
+	public function add_notice( string $message, string $class_name = 'notice', array $options = [] ): void {
 		$this->notices[] = [
 			'message' => $message,
-			'class'   => $class,
+			'class'   => $class_name,
 			'options' => $options,
 		];
 	}
@@ -45,7 +45,7 @@ class AdminNotices {
 	/**
 	 * Show all notices.
 	 */
-	public function show_notices() {
+	public function show_notices(): void {
 		foreach ( $this->notices as $notice ) {
 			if ( ! $this->is_screen_allowed( $notice ) ) {
 				continue;
@@ -68,7 +68,7 @@ class AdminNotices {
 	 *
 	 * @return bool
 	 */
-	protected function is_screen_allowed( $notice ) {
+	protected function is_screen_allowed( array $notice ): bool {
 		$screen_ids = isset( $notice['options']['screen_ids'] ) ? (array) $notice['options']['screen_ids'] : null;
 		if ( empty( $screen_ids ) ) {
 			return true;

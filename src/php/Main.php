@@ -17,28 +17,28 @@ class Main {
 	/**
 	 * Error handler filename.
 	 */
-	const ERROR_HANDLER_FILENAME = 'kagg-compatibility-error-handler.php';
+	private const ERROR_HANDLER_FILENAME = 'kagg-compatibility-error-handler.php';
 
 	/**
 	 * Error handler source path.
 	 *
 	 * @var string
 	 */
-	private $error_handler_source;
+	private string $error_handler_source;
 
 	/**
 	 * Error handler destination path.
 	 *
 	 * @var string
 	 */
-	private $error_handler_destination;
+	private string $error_handler_destination;
 
 	/**
 	 * AdminNotices instance.
 	 *
 	 * @var AdminNotices
 	 */
-	private $admin_notices;
+	private AdminNotices $admin_notices;
 
 	/**
 	 * Class constructor.
@@ -53,7 +53,7 @@ class Main {
 	 *
 	 * @return void
 	 */
-	public function init() {
+	public function init(): void {
 		global $wp_version;
 
 		$this->admin_notices = new AdminNotices();
@@ -85,7 +85,7 @@ class Main {
 	 *
 	 * @return void
 	 */
-	private function hooks() {
+	private function hooks(): void {
 		register_activation_hook( KAGG_COMPATIBILITY_FILE, [ $this, 'activation_hook' ] );
 		register_deactivation_hook( KAGG_COMPATIBILITY_FILE, [ $this, 'deactivation_hook' ] );
 
@@ -97,7 +97,7 @@ class Main {
 	 *
 	 * @return void
 	 */
-	public function activation_hook() {
+	public function activation_hook(): void {
 		if ( $this->copy_error_handler() ) {
 			return;
 		}
@@ -114,7 +114,7 @@ class Main {
 	 *
 	 * @return void
 	 */
-	public function deactivation_hook() {
+	public function deactivation_hook(): void {
 		if ( $this->delete_error_handler() ) {
 			return;
 		}
@@ -131,7 +131,7 @@ class Main {
 	 *
 	 * @return void
 	 */
-	public function load_plugin_textdomain() {
+	public function load_plugin_textdomain(): void {
 		global $l10n;
 
 		$domain = 'kagg-compatibility';
@@ -154,7 +154,7 @@ class Main {
 	 *
 	 * @return WP_Filesystem_Base|null
 	 */
-	private function get_filesystem_direct() {
+	private function get_filesystem_direct(): ?WP_Filesystem_Base {
 
 		global $wp_filesystem;
 
@@ -174,7 +174,7 @@ class Main {
 	 *
 	 * @return bool
 	 */
-	private function copy_error_handler() {
+	private function copy_error_handler(): bool {
 		$filesystem = $this->get_filesystem_direct();
 
 		if ( ! $filesystem ) {
@@ -197,7 +197,7 @@ class Main {
 	 *
 	 * @return bool
 	 */
-	private function delete_error_handler() {
+	private function delete_error_handler(): bool {
 		$filesystem = $this->get_filesystem_direct();
 
 		if ( ! $filesystem ) {

@@ -22,14 +22,14 @@ class ErrorHandler {
 	 *
 	 * @var string[]
 	 */
-	private $dirs;
+	private array $dirs;
 
 	/**
 	 * Init class.
 	 *
 	 * @return void
 	 */
-	public function init() {
+	public function init(): void {
 		$this->dirs = [
 			ABSPATH . WPINC . '/', // WordPress wp-includes.
 			ABSPATH . 'wp-admin/', // WordPress wp-admin.
@@ -39,7 +39,7 @@ class ErrorHandler {
 		];
 
 		$this->dirs = array_map(
-			static function( $dir ) {
+			static function ( $dir ) {
 				return str_replace( DIRECTORY_SEPARATOR, '/', $dir );
 			},
 			$this->dirs
@@ -53,7 +53,7 @@ class ErrorHandler {
 	 *
 	 * @return void
 	 */
-	private function init_hooks() {
+	private function init_hooks(): void {
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
 		set_error_handler( [ $this, 'error_handler' ] );
 
@@ -71,7 +71,7 @@ class ErrorHandler {
 	 * @return bool
 	 * @noinspection PhpUnusedParameterInspection
 	 */
-	public function error_handler( $level, $message, $file, $line ) {
+	public function error_handler( int $level, string $message, string $file, int $line ): bool {
 		if ( E_DEPRECATED !== $level ) {
 			// Use standard error handler.
 			return false;
@@ -80,7 +80,7 @@ class ErrorHandler {
 		$file = str_replace( DIRECTORY_SEPARATOR, '/', $file );
 
 		foreach ( $this->dirs as $dir ) {
-			if ( strpos( $file, $dir ) !== false ) {
+			if ( str_contains( $file, $dir ) ) {
 				// Suppress deprecated errors from this directory.
 				return true;
 			}
@@ -95,9 +95,8 @@ class ErrorHandler {
 	 * This error leads to adding .php-error class (2em margin-top) to the #adminmenuwrap.
 	 *
 	 * @return void
-	 * @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection
 	 */
-	public function admin_head() {
+	public function admin_head(): void {
 		$error_get_last = error_get_last();
 
 		if ( ! isset( $error_get_last['file'] ) ) {
