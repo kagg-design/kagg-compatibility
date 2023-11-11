@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        php-version: [ '8.1' ]
+        php-version: [ '8.2' ]
 
     name: PHP ${{ matrix.php-version }} on ${{ matrix.os }}
 
@@ -21,20 +21,9 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-        env:
-          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Composer caching
+      - name: Install dependencies with caching
         uses: ramsey/composer-install@v2
-        with:
-          working-directory: ${{ env.wp-plugin-directory }}
-
-      - name: Install dependencies and update PHPUnit
-        run: |
-          composer config github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
-          composer install
-        env:
-          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run code sniffer
-        run: vendor/bin/phpcs --colors
+        run: composer phpcs --colors
