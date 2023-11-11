@@ -17,7 +17,7 @@ class Main {
 	/**
 	 * Error handler filename.
 	 */
-	private const ERROR_HANDLER_FILENAME = 'kagg-compatibility-error-handler.php';
+	private const MU_FILENAME = 'kagg-compatibility-error-handler.php';
 
 	/**
 	 * Error handler source path.
@@ -44,8 +44,8 @@ class Main {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->error_handler_source      = KAGG_COMPATIBILITY_PATH . '/src/php/' . self::ERROR_HANDLER_FILENAME;
-		$this->error_handler_destination = WPMU_PLUGIN_DIR . '/' . self::ERROR_HANDLER_FILENAME;
+		$this->error_handler_source      = __DIR__ . '/' . self::MU_FILENAME;
+		$this->error_handler_destination = WPMU_PLUGIN_DIR . '/' . self::MU_FILENAME;
 	}
 
 	/**
@@ -96,34 +96,26 @@ class Main {
 	 * Activation hook.
 	 *
 	 * @return void
+	 * @noinspection ForgottenDebugOutputInspection
 	 */
 	public function activation_hook(): void {
-		if ( $this->copy_error_handler() ) {
-			return;
+		if ( ! $this->copy_error_handler() ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( 'Cannot install mu-plugin with error handler.' );
 		}
-
-		$this->load_plugin_textdomain();
-		$this->admin_notices->add_notice(
-			__( 'Cannot install mu-plugin with error handler.', 'kagg-compatibility' ),
-			'notice notice-error'
-		);
 	}
 
 	/**
 	 * Deactivation hook.
 	 *
 	 * @return void
+	 * @noinspection ForgottenDebugOutputInspection
 	 */
 	public function deactivation_hook(): void {
-		if ( $this->delete_error_handler() ) {
-			return;
+		if ( ! $this->delete_error_handler() ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( 'Cannot delete mu-plugin with error handler.' );
 		}
-
-		$this->load_plugin_textdomain();
-		$this->admin_notices->add_notice(
-			__( 'Cannot delete mu-plugin with error handler.', 'kagg-compatibility' ),
-			'notice notice-error'
-		);
 	}
 
 	/**
