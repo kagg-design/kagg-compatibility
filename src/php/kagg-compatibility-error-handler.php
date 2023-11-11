@@ -12,17 +12,39 @@
 
 namespace KAGG\Compatibility;
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Class ErrorHandler
+ * Class MUErrorHandler.
  */
-class ErrorHandler {
+class MUErrorHandler {
+
+	/**
+	 * Option name.
+	 */
+	private const OPTION = 'kagg-compatibility-settings';
+
+	/**
+	 * Error handler option key.
+	 */
+	private const OPTION_KEY = 'dirs';
 
 	/**
 	 * Directories where can deprecation error occurs.
 	 *
 	 * @var string[]
 	 */
-	private array $dirs;
+	private array $dirs = [];
+
+	/**
+	 * Previous error handler.
+	 *
+	 * @var callable|null
+	 */
+	private $previous_error_handler;
 
 	/**
 	 * Init class.
@@ -30,52 +52,15 @@ class ErrorHandler {
 	 * @return void
 	 */
 	public function init(): void {
-		$this->dirs = $this->init_dirs();
+		$option = get_option( self::OPTION, [] );
+
+		$this->dirs = empty( $option[ self::OPTION_KEY ] ) ? [] : $option[ self::OPTION_KEY ];
+
+		if ( ! $this->dirs ) {
+			return;
+		}
+
 		$this->init_hooks();
-	}
-
-	/**
-	 * Init dirs to suppress messages from.
-	 *
-	 * @return array Default dirs.
-	 */
-	private function init_dirs(): array {
-		$dirs = [
-			// WP Core.
-			ABSPATH . WPINC . '/', // WordPress wp-includes.
-			ABSPATH . 'wp-admin/', // WordPress wp-admin.
-			// Known libraries in different plugins producing deprecated messages.
-			'/vendor/rmccue/requests/', // Requests library used in WP-CLI.
-			'/vendor/woocommerce/action-scheduler/', // Action Scheduler.
-			// Plugins producing deprecated messages.
-			WP_PLUGIN_DIR . '/backwpup/', // BackWPup.
-			WP_PLUGIN_DIR . '/business-reviews-bundle/', // Business review bundle.
-			WP_PLUGIN_DIR . '/cloudflare/', // Cloudflare.
-			WP_PLUGIN_DIR . '/easy-digital-downloads/', // Easy Digital Downloads.
-			WP_PLUGIN_DIR . '/google-site-kit/', // Google Site Kit.
-			WP_PLUGIN_DIR . '/gravityforms/', // Gravity Forms.
-			WP_PLUGIN_DIR . '/gravityperks/', // Gravity Perks.
-			WP_PLUGIN_DIR . '/mailpoet/', // MailPoet.
-			WP_PLUGIN_DIR . '/seo-by-rank-math/', // Rank Math SEO.
-			WP_PLUGIN_DIR . '/sitepress-multilingual-cms/', // WPML.
-			WP_PLUGIN_DIR . '/woocommerce/', // WooCommerce.
-			WP_PLUGIN_DIR . '/wp-google-places-review-slider/', // Google places review slider.
-			WP_PLUGIN_DIR . '/wp-job-openings/', // Job openings.
-			WP_PLUGIN_DIR . '/wp-seo-multilingual/', // WPML SEO.
-			WP_PLUGIN_DIR . '/wp-super-cache/', // WP Super Cache.
-			// Themes producing deprecated messages.
-			WP_CONTENT_DIR . '/themes/Divi/', // Divi Theme.
-		];
-
-		$abspath = str_replace( '\\', '/', realpath( ABSPATH ) );
-
-		return array_map(
-			static function ( $dir ) use ( $abspath ) {
-
-				return str_replace( [ '\\', $abspath ], [ '/', '' ], $dir );
-			},
-			$dirs
-		);
 	}
 
 	/**
@@ -84,40 +69,17 @@ class ErrorHandler {
 	 * @return void
 	 */
 	private function init_hooks(): void {
-		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
-		set_error_handler( [ $this, 'error_handler' ] );
-
 		add_action( 'admin_head', [ $this, 'admin_head' ] );
-	}
 
-	/**
-	 * Error handler.
-	 *
-	 * @param int    $level   Error level.
-	 * @param string $message Error message.
-	 * @param string $file    File produced an error.
-	 * @param int    $line    Line number.
-	 *
-	 * @return bool
-	 * @noinspection PhpUnusedParameterInspection
-	 */
-	public function error_handler( int $level, string $message, string $file, int $line ): bool {
-		if ( E_DEPRECATED !== $level ) {
-			// Use standard error handler.
-			return false;
+		// Set this error handler early to catch any errors on the plugin loading stage.
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
+		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
+
+		if ( current_action() === 'plugins_loaded' ) {
+			return;
 		}
 
-		$file = str_replace( DIRECTORY_SEPARATOR, '/', $file );
-
-		foreach ( $this->dirs as $dir ) {
-			if ( str_contains( $file, $dir ) ) {
-				// Suppress deprecated errors from this directory.
-				return true;
-			}
-		}
-
-		// Use standard error handler.
-		return false;
+		add_action( 'plugin_loaded', [ $this, 'qm_loaded' ] );
 	}
 
 	/**
@@ -138,6 +100,58 @@ class ErrorHandler {
 			error_clear_last();
 		}
 	}
+
+	/**
+	 * QM loaded hook.
+	 *
+	 * @param string $plugin Full path to the plugin's main file.
+	 *
+	 * @return void
+	 */
+	public function qm_loaded( string $plugin ): void {
+
+		if ( ! str_contains( $plugin, 'query-monitor/query-monitor.php' ) ) {
+			return;
+		}
+
+		// Set this error handler after loading the Query Monitor plugin to chain its error handler.
+		( new self() )->init();
+	}
+
+	/**
+	 * Error handler.
+	 *
+	 * @param int    $level   Error level.
+	 * @param string $message Error message.
+	 * @param string $file    File produced an error.
+	 * @param int    $line    Line number.
+	 *
+	 * @return bool
+	 */
+	public function error_handler( int $level, string $message, string $file, int $line ): bool {
+		if ( E_DEPRECATED !== $level ) {
+			// Use standard error handler.
+			return null === $this->previous_error_handler ?
+				false :
+				// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
+				call_user_func_array( $this->previous_error_handler, func_get_args() );
+		}
+
+		$normalized_file = str_replace( DIRECTORY_SEPARATOR, '/', $file );
+
+		foreach ( $this->dirs as $dir ) {
+			if ( str_contains( $normalized_file, $dir ) ) {
+				// Suppress deprecated errors from this directory.
+				return true;
+			}
+		}
+
+		// Use standard error handler.
+		return null === $this->previous_error_handler ?
+			false :
+			// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
+			call_user_func_array( $this->previous_error_handler, func_get_args() );
+	}
 }
 
-( new ErrorHandler() )->init();
+( new MUErrorHandler() )->init();
