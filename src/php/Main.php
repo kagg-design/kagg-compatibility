@@ -54,29 +54,6 @@ class Main {
 	 * @return void
 	 */
 	public function init(): void {
-		global $wp_version;
-
-		$this->admin_notices = new AdminNotices();
-
-		// Plugin works with PHP 8.1+ only.
-		if ( PHP_VERSION_ID < 80100 ) {
-			$this->admin_notices->add_notice(
-				__( 'KAGG Compatibility requires PHP version 8.1 to run.', 'kagg-compatibility' ),
-				'notice notice-error'
-			);
-
-			return;
-		}
-
-		if ( version_compare( $wp_version, '5.9', '<' ) ) {
-			$this->admin_notices->add_notice(
-				__( 'KAGG Compatibility requires WordPress version 5.9 to run.', 'kagg-compatibility' ),
-				'notice notice-error'
-			);
-
-			return;
-		}
-
 		$this->hooks();
 	}
 
@@ -89,7 +66,7 @@ class Main {
 		register_activation_hook( KAGG_COMPATIBILITY_FILE, [ $this, 'activation_hook' ] );
 		register_deactivation_hook( KAGG_COMPATIBILITY_FILE, [ $this, 'deactivation_hook' ] );
 
-		add_action( 'plugins_loaded', [ $this, 'load_plugin_textdomain' ] );
+		add_action( 'plugins_loaded', [ $this, 'load' ] );
 	}
 
 	/**
@@ -119,24 +96,37 @@ class Main {
 	}
 
 	/**
-	 * Load plugin text domain.
+	 * Load plugin.
 	 *
 	 * @return void
 	 */
-	public function load_plugin_textdomain(): void {
-		global $l10n;
-
-		$domain = 'kagg-compatibility';
-
-		if ( isset( $l10n[ $domain ] ) ) {
-			return;
-		}
+	public function load(): void {
+		global $wp_version;
 
 		load_plugin_textdomain(
-			$domain,
+			'kagg-compatibility',
 			false,
 			dirname( plugin_basename( KAGG_COMPATIBILITY_FILE ) ) . '/languages/'
 		);
+
+		$this->admin_notices = new AdminNotices();
+
+		// Plugin works with PHP 8.1+ only.
+		if ( PHP_VERSION_ID < 80100 ) {
+			$this->admin_notices->add_notice(
+				__( 'KAGG Compatibility requires PHP version 8.1 to run.', 'kagg-compatibility' ),
+				'notice notice-error'
+			);
+
+			return;
+		}
+
+		if ( version_compare( $wp_version, '5.9', '<' ) ) {
+			$this->admin_notices->add_notice(
+				__( 'KAGG Compatibility requires WordPress version 5.9 to run.', 'kagg-compatibility' ),
+				'notice notice-error'
+			);
+		}
 	}
 
 	/**
