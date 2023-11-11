@@ -34,13 +34,6 @@ class Main {
 	private string $error_handler_destination;
 
 	/**
-	 * AdminNotices instance.
-	 *
-	 * @var AdminNotices
-	 */
-	private AdminNotices $admin_notices;
-
-	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
@@ -109,11 +102,11 @@ class Main {
 			dirname( plugin_basename( KAGG_COMPATIBILITY_FILE ) ) . '/languages/'
 		);
 
-		$this->admin_notices = new AdminNotices();
+		$admin_notices = new AdminNotices();
 
 		// Plugin works with PHP 8.1+ only.
 		if ( PHP_VERSION_ID < 80100 ) {
-			$this->admin_notices->add_notice(
+			$admin_notices->add_notice(
 				__( 'KAGG Compatibility requires PHP version 8.1 to run.', 'kagg-compatibility' ),
 				'notice notice-error'
 			);
@@ -122,7 +115,7 @@ class Main {
 		}
 
 		if ( version_compare( $wp_version, '5.9', '<' ) ) {
-			$this->admin_notices->add_notice(
+			$admin_notices->add_notice(
 				__( 'KAGG Compatibility requires WordPress version 5.9 to run.', 'kagg-compatibility' ),
 				'notice notice-error'
 			);
