@@ -2,17 +2,17 @@
 Contributors: kaggdesign
 Tags: compatibility, PHP 8.1, development, deprecation, notice
 Requires at least: 5.9
-Tested up to: 6.3
+Tested up to: 6.4
 Stable tag: 1.3.0
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The plugin blocks PHP 8.1 deprecation messages from WordPress core, WooCommerce, Jetpack and other plugins.
+The plugin blocks PHP 8.1+ deprecation messages from WordPress core, WooCommerce, Jetpack and other plugins.
 
 == Description ==
 
-[WordPress is not fully compatible with PHP 8.0 or 8.1](https://make.wordpress.org/core/2022/01/10/wordpress-5-9-and-php-8-0-8-1/). All remaining known PHP 8.1 issues are deprecation notices.
+[WordPress is not fully compatible with PHP 8.1 and 8.2](https://make.wordpress.org/core/handbook/references/php-compatibility-and-wordpress-versions/). All remaining known PHP 8.1+ issues are deprecation notices.
 
 The same is related to many popular plugins such as WooCommerce, Jetpack and others. Mainly, they produce deprecation notices from the Action Scheduler library.
 
@@ -37,6 +37,11 @@ Yes, you can!
 * Join in on our [GitHub repository](https://github.com/kagg-design/kagg-compatibility)
 
 == Changelog ==
+
+= 1.4.0 =
+* Tested with WordPress 6.4.
+* Added ability to chain error handlers.
+* Added compatibility with Query Monitor.
 
 = 1.3.0 =
 * Tested with WordPress 6.3.
