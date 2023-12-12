@@ -9,7 +9,7 @@
  *
  * Plugin Name:       KAGG Compatibility
  * Plugin URI:        https://wordpress.org/plugins/kagg-compatibility/
- * Description:       Blocks PHP 8.1+ deprecation messages from WordPress core, WooCommerce, Jetpack and other plugins.
+ * Description:       Blocks error messages of any levels from WordPress core, plugins, and themes.
  * Version:           1.3.0
  * Requires at least: 5.9
  * Requires PHP:      8.1
