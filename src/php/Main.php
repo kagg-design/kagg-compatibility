@@ -7,22 +7,14 @@
 
 namespace KAGG\Compatibility;
 
+use KAGG\Compatibility\Settings\General;
+use KAGG\Compatibility\Settings\Settings;
 use WP_Filesystem_Base;
 
 /**
  * Class Main.
  */
 class Main {
-
-	/**
-	 * Option name.
-	 */
-	private const OPTION = 'kagg-compatibility-settings';
-
-	/**
-	 * Error handler option key.
-	 */
-	private const OPTION_KEY = 'dirs';
 
 	/**
 	 * Error handler filename.
@@ -42,6 +34,13 @@ class Main {
 	 * @var string
 	 */
 	private string $error_handler_destination;
+
+	/**
+	 * Settings instance.
+	 *
+	 * @var Settings
+	 */
+	private $settings;
 
 	/**
 	 * Class constructor.
@@ -66,6 +65,12 @@ class Main {
 	 * @return void
 	 */
 	private function hooks(): void {
+		$this->settings = new Settings(
+			[
+				'KAGG Compatibility' => [ General::class ],
+			]
+		);
+
 		register_activation_hook( KAGG_COMPATIBILITY_FILE, [ $this, 'activation_hook' ] );
 		register_deactivation_hook( KAGG_COMPATIBILITY_FILE, [ $this, 'deactivation_hook' ] );
 
@@ -79,13 +84,16 @@ class Main {
 	 * @noinspection ForgottenDebugOutputInspection
 	 */
 	public function activation_hook(): void {
-		$option = get_option( self::OPTION );
-		$dirs   = isset( $option[ self::OPTION_KEY ] ) ? [] : $option[ self::OPTION_KEY ];
+		$dirs = $this->settings->get( 'dirs', [] );
 
 		if ( ! $dirs ) {
-			$option[ self::OPTION_KEY ] = $this->init_dirs();
+			$tabs = $this->settings->get_tabs();
 
-			update_option( self::OPTION, $option );
+			foreach ( $tabs as $tab ) {
+				if ( $tab instanceof General ) {
+					$tab->update_option( 'dirs', implode( "\n", $this->init_dirs() ) );
+				}
+			}
 		}
 
 		if ( ! $this->copy_error_handler() ) {
@@ -123,7 +131,7 @@ class Main {
 
 		$admin_notices = new AdminNotices();
 
-		// Plugin works with PHP 8.1+ only.
+		// The plugin works with PHP 8.1+ only.
 		if ( PHP_VERSION_ID < 80100 ) {
 			$admin_notices->add_notice(
 				__( 'KAGG Compatibility requires PHP version 8.1 to run.', 'kagg-compatibility' ),

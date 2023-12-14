@@ -40,7 +40,8 @@
   },
   "autoload": {
     "psr-4": {
-      "KAGG\\Compatibility\\": "src/php"
+      "KAGG\\Compatibility\\": "src/php",
+      "KAGG\\Settings\\Abstracts\\": "src/php/Settings/Abstracts"
     }
   },
   "scripts": {

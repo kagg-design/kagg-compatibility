@@ -1,0 +1,217 @@
+body.settings_page_kagg-compatibility {
+	background: #f0f2f5;
+	color: #5c6f8a;
+}
+
+.wrap h1.kagg-compatibility-settings-header {
+	font-size: 34px;
+	font-weight: bold;
+	display: flex;
+	align-items: center;
+}
+
+.kagg-compatibility-logo {
+	height: 64px;
+	margin: 10px 5px 10px 0;
+}
+
+.kagg-settings-tabs {
+	line-height: 4.5em;
+	background: #fff;
+	margin: 10px -20px 0 -20px;
+	padding: 0 20px;
+}
+
+.kagg-settings-tab {
+	display: inline-block;
+	font-size: 1.1em;
+	text-decoration: none;
+	margin-right: 30px;
+	color: #646970;
+	border-bottom: 2px solid transparent;
+}
+
+.kagg-settings-tab:hover {
+	color: #666;
+	border-bottom-color: #025176 !important;
+	border-bottom: 2px solid;
+}
+
+.kagg-settings-tab.active {
+	border-bottom: 2px solid #0075ab;
+}
+
+#kagg-compatibility-options h2 {
+	font-size: 1.5em;
+	color: #5c6f8a;
+}
+
+#kagg-compatibility-options h3 {
+	margin: 1.5em 0 1em;
+	color: #5c6f8a;
+}
+
+#kagg-compatibility-options .notice-dismiss:before {
+	color: #5c6f8a;
+}
+
+#kagg-compatibility-options table tbody tr td {
+	padding: 0;
+	margin: 0;
+	position: relative;
+}
+
+#kagg-compatibility-options table tr td input[type="checkbox"] {
+	display: inline;
+	border: none;
+	box-shadow: none;
+	margin: 0 4px 0 0;
+	min-width: 0;
+	width: 0;
+}
+
+#kagg-compatibility-options table tr td input[type="checkbox"]::before {
+	background: no-repeat url('../images/checkbox-off.svg');
+	margin: 0;
+	width: 2.4792rem;
+	height: 1.3125rem;
+	content: '';
+	display: inline-block;
+	float: left;
+}
+
+#kagg-compatibility-options table tr td input[type="checkbox"]:checked::before {
+	background: no-repeat url('../images/checkbox-on.svg');
+}
+
+#kagg-compatibility-options fieldset:disabled {
+	color: #dadada;
+}
+
+#kagg-compatibility-options .button-primary {
+	background-color: #026593;
+	color: #ffffff;
+	border-color: #026593;
+}
+
+#kagg-compatibility-options .button-primary:hover {
+	background-color: #025176;
+}
+
+#kagg-compatibility-options .button-secondary {
+	background-color: #ffffff;
+	color: #026593;
+	border-color: #026593;
+}
+
+#kagg-compatibility-options .button-secondary:hover {
+	background-color: #cccccc;
+}
+
+#kagg-compatibility-options a {
+	color: #0075ab;
+}
+
+#kagg-compatibility-navigation a {
+	border-color: #0075ab;
+}
+
+#kagg-compatibility-options a.kagg-settings-tab {
+	color: #5c6f8a;
+}
+
+/* Helper */
+#kagg-compatibility-options .helper::before {
+	content: '?';
+	position: absolute;
+	right: 0;
+	top: 0;
+	transform: translate(0, -26px);
+	background: #5c6f8a;
+	color: #fff;
+	width: 1.2em;
+	height: 1.2em;
+	text-align: center;
+	border-radius: 1.2em;
+}
+
+#kagg-compatibility-options fieldset + .helper::before {
+	transform: translate(25px, -0.8em);
+	top: 50%;
+}
+
+#kagg-compatibility-options .helper .helper-content {
+	display: none;
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: translate(1px, 10px);
+	background: #5c6f8a;
+	color: #f0f2f5;
+	padding: 0.5em 1em;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+#kagg-compatibility-options fieldset + .helper .helper-content {
+	top: 50%;
+	transform: translate(25px, 25px);
+	width: calc(100% + 25px);
+}
+
+#kagg-compatibility-options .helper:hover {
+	cursor: help;
+}
+
+#kagg-compatibility-options .helper:hover .helper-content {
+	display: block;
+	z-index: 1;
+}
+
+#kagg-compatibility-options .helper .helper-content::after {
+	content: '';
+	border: solid 10px transparent;
+	border-bottom-color: #5c6f8a;
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: translateY(-100%);
+}
+
+#kagg-compatibility-options .helper .helper-content a {
+	color: #fff;
+}
+
+#kagg-compatibility-message {
+	z-index: 1;
+}
+
+#kagg-compatibility-message p {
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.5;
+	margin: 0.5em 0;
+}
+
+@media (max-width: 600px) {
+	#kagg-compatibility-options table tbody {
+		grid-template-columns: 1fr;
+	}
+
+	#kagg-compatibility-options table tbody tr {
+		position: relative;
+	}
+
+	#kagg-compatibility-options fieldset + .helper::before {
+		transform: translate(0px, -0.7em);
+	}
+
+	#kagg-compatibility-options fieldset + .helper .helper-content {
+		transform: translate(0, 25px);
+		width: 100%;
+	}
+
+	#kagg-compatibility-options .helper {
+		z-index: 1;
+	}
+}
