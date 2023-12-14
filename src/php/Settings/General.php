@@ -7,7 +7,7 @@
 
 namespace KAGG\Compatibility\Settings;
 
-use KAGG\Settings\Abstracts\SettingsBase;
+use KAGG\Compatibility\Settings\Abstracts\SettingsBase;
 
 /**
  * Class General
@@ -32,9 +32,9 @@ class General extends PluginSettingsBase {
 	const RESET_ACTION = 'kagg-compatibility-general-reset';
 
 	/**
-	 * Directories section id.
+	 * Parameters section id.
 	 */
-	const SECTION_DIRECTORIES = 'directories';
+	const SECTION_PARAMETERS = 'parameters';
 
 	/**
 	 * Live mode.
@@ -67,7 +67,7 @@ class General extends PluginSettingsBase {
 			'dirs' => [
 				'label'   => __( 'Directories', 'kagg-compatibility' ),
 				'type'    => 'textarea',
-				'section' => self::SECTION_DIRECTORIES,
+				'section' => self::SECTION_PARAMETERS,
 			],
 		];
 	}
@@ -89,7 +89,7 @@ class General extends PluginSettingsBase {
 	 * @param array $arguments Section arguments.
 	 */
 	public function section_callback( array $arguments ) {
-		if ( self::SECTION_DIRECTORIES !== $arguments['id'] ) {
+		if ( self::SECTION_PARAMETERS !== $arguments['id'] ) {
 			return;
 		}
 
@@ -100,7 +100,7 @@ class General extends PluginSettingsBase {
 		<div id="<?php echo esc_attr( self::SLUG ); ?>-message"></div>
 		<?php
 
-		$this->print_section_header( $arguments['id'], __( 'Directories', 'kagg-compatibility' ) );
+		$this->print_section_header( $arguments['id'], __( 'Parameters', 'kagg-compatibility' ) );
 	}
 
 	/**
@@ -145,7 +145,7 @@ class General extends PluginSettingsBase {
 		wp_enqueue_style(
 			self::HANDLE,
 			constant( 'KAGG_COMPATIBILITY_URL' ) . "/assets/css/general$this->min_prefix.css",
-			[ static::SLUG . '-' . SettingsBase::HANDLE ],
+			[ static::PREFIX . '-' . SettingsBase::HANDLE ],
 			constant( 'KAGG_COMPATIBILITY_VERSION' )
 		);
 	}

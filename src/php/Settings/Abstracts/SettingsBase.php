@@ -5,7 +5,7 @@
  * @package kagg-settings
  */
 
-namespace KAGG\Settings\Abstracts;
+namespace KAGG\Compatibility\Settings\Abstracts;
 
 /**
  * Class SettingsBase
@@ -24,7 +24,7 @@ abstract class SettingsBase {
 	/**
 	 * Settings prefix.
 	 */
-	const SLUG = 'kagg';
+	const PREFIX = 'kagg';
 
 	/**
 	 * Network-wide option suffix.
@@ -472,7 +472,7 @@ abstract class SettingsBase {
 		$this->get_active_tab()->admin_enqueue_scripts();
 
 		wp_enqueue_style(
-			static::SLUG . '-' . self::HANDLE,
+			static::PREFIX . '-' . self::HANDLE,
 			$this->plugin_url() . "/assets/css/settings-base$this->min_prefix.css",
 			[],
 			$this->plugin_version()
@@ -536,8 +536,12 @@ abstract class SettingsBase {
 	 * Show tabs.
 	 */
 	public function tabs_callback() {
+		if ( count( $this->tabs ) <= 1 ) {
+			return;
+		}
+
 		?>
-		<div class="<?php echo esc_attr( static::SLUG . '-settings-tabs' ); ?>">
+		<div class="<?php echo esc_attr( static::PREFIX . '-settings-tabs' ); ?>">
 			<?php
 			$this->tab_link( $this );
 
@@ -561,7 +565,7 @@ abstract class SettingsBase {
 
 		?>
 		<a
-				class="<?php echo esc_attr( static::SLUG . '-settings-tab' ); ?><?php echo esc_attr( $active ); ?>"
+				class="<?php echo esc_attr( static::PREFIX . '-settings-tab' ); ?><?php echo esc_attr( $active ); ?>"
 				href="<?php echo esc_url( $url ); ?>">
 			<?php echo esc_html( $tab->page_title() ); ?>
 		</a>
@@ -1033,7 +1037,7 @@ abstract class SettingsBase {
 		foreach ( $value as $key => $cell_value ) {
 			$id = $arguments['field_id'] . '-' . $iterator;
 
-			echo '<div class="' . esc_attr( self::SLUG . '-table-cell' ) . '">';
+			echo '<div class="' . esc_attr( self::PREFIX . '-table-cell' ) . '">';
 			printf(
 				'<label for="%1$s">%2$s</label>',
 				esc_html( $id ),

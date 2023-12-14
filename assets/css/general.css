@@ -23,200 +23,33 @@
 	position: relative;
 }
 
-/* Section Keys */
-.kagg-compatibility-section-keys + table {
+/* Section Parameters */
+.kagg-compatibility-section-parameters + table {
 	max-width: 760px;
 }
 
-.kagg-compatibility-section-keys + table tbody {
+.kagg-compatibility-section-parameters + table tbody {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	grid-template-areas:
-		"site-key site-key secret-key secret-key"
-		"sample-kagg-compatibility sample-kagg-compatibility check-config reset-notifications";
 	gap: 10px 20px;
 	padding: 15px 20px;
 }
 
-.kagg-compatibility-section-keys + table tbody th {
-	width: auto;
-}
-
-.kagg-compatibility-section-keys + table tbody tr.kagg-compatibility-general-site-key {
-	grid-area: site-key;
-}
-
-.kagg-compatibility-section-keys + table tbody tr.kagg-compatibility-general-secret-key {
-	grid-area: secret-key;
-}
-
-.kagg-compatibility-section-keys + table tbody tr.kagg-compatibility-general-sample-kagg-compatibility {
-	grid-area: sample-kagg-compatibility;
-}
-
-.kagg-compatibility-section-keys + table tbody tr.kagg-compatibility-general-check-config {
-	grid-area: check-config;
-}
-
-.kagg-compatibility-section-keys + table tbody tr.kagg-compatibility-reset-notifications {
-	grid-area: reset-notifications;
-}
-
-.kagg-compatibility-section-keys + table tbody tr th {
-	padding: 0 0 10px 0;
-}
-
-.kagg-compatibility-section-keys + table tbody tr td input {
-	width: 100%;
-}
-
-/* Section Appearance */
-.kagg-compatibility-section-appearance + table {
-	max-width: 760px;
-}
-
-.kagg-compatibility-section-appearance + table tbody {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: 10px 20px;
-	padding: 15px 20px;
-}
-
-.kagg-compatibility-section-appearance + table tbody tr th {
+.kagg-compatibility-section-parameters + table tbody tr th {
 	padding: 0 0 10px 0;
 	width: auto;
 }
 
-.kagg-compatibility-section-appearance + table tbody tr td select {
+.kagg-compatibility-section-parameters + table tbody tr.kagg-compatibility-general-dirs td {
+	width: auto;
+}
+
+.kagg-compatibility-section-parameters + table tbody tr td textarea {
 	width: 100%;
-}
-
-/* Section Custom */
-.kagg-compatibility-section-custom + table {
-	max-width: 760px;
-}
-
-.kagg-compatibility-section-custom + table tbody {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 10px 20px;
-	padding: 15px 20px;
-}
-
-.kagg-compatibility-section-custom + table tbody tr th {
-	padding: 0 0 10px 0;
-	width: auto;
-}
-
-.kagg-compatibility-section-custom + table tbody tr td {
-	width: max-content;
-}
-
-.kagg-compatibility-section-custom + table tbody tr.kagg-compatibility-general-config-params td {
-	width: auto;
-}
-
-.kagg-compatibility-section-custom + table tbody tr td textarea {
-	width: 100%;
-}
-
-/* Section Other */
-.kagg-compatibility-section-other + table {
-	max-width: 760px;
-}
-
-.kagg-compatibility-section-other + table tbody {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	grid-template-areas:
-		"logged whitelisted"
-		"recaptcha whitelisted"
-		"network whitelisted"
-		"login-limit login-interval"
-		"delay .";
-	gap: 0 20px;
-	padding: 15px 20px;
-}
-
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-off-when-logged-in {
-	grid-area: logged;
-}
-
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-recaptcha-compat-off {
-	grid-area: recaptcha;
-}
-
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-login-limit {
-	grid-area: login-limit;
-	padding-top: 15px;
-}
-
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-login-interval {
-	grid-area: login-interval;
-	padding-top: 15px;
-}
-
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-whitelisted-ips {
-	grid-area: whitelisted;
-}
-
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general--network-wide {
-	grid-area: network;
-}
-
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-delay {
-	grid-area: delay;
-	padding-top: 15px;
-}
-
-.kagg-compatibility-section-other + table tbody tr th {
-	padding: 0 0 10px 0;
-	width: auto;
-}
-
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-recaptcha-compat-off th,
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general--network-wide th {
-	padding: 0;
-}
-
-.kagg-compatibility-section-other + table tbody tr td {
-	width: max-content;
-}
-
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-whitelisted-ips td,
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-login-limit td,
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-login-interval td,
-.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-delay td {
-	width: auto;
-}
-
-.kagg-compatibility-section-other + table tbody tr td textarea,
-.kagg-compatibility-section-other + table tbody tr td input {
-	width: 100%;
+	height: 30em;
 }
 
 @media (max-width: 600px) {
 	.kagg-compatibility-general table tbody tr td {
-		width: auto;
-	}
-
-	.kagg-compatibility-section-keys + table tbody {
-		grid-template-areas: unset;
-	}
-
-	.kagg-compatibility-section-keys + table tbody tr {
-		grid-area: unset !important;
-	}
-
-	.kagg-compatibility-section-other + table tbody {
-		grid-template-areas: unset;
-	}
-
-	.kagg-compatibility-section-other + table tbody tr {
-		grid-area: unset !important;
-	}
-
-	.kagg-compatibility-section-other + table tbody tr.kagg-compatibility-general-whitelisted-ips td {
 		width: auto;
 	}
 }

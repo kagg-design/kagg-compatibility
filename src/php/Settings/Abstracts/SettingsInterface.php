@@ -5,7 +5,7 @@
  * @package kagg/compatibility
  */
 
-namespace KAGG\Settings\Abstracts;
+namespace KAGG\Compatibility\Settings\Abstracts;
 
 /**
  * Interface SettingsInterface.

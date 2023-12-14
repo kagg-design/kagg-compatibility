@@ -10,8 +10,8 @@
 
 namespace KAGG\Compatibility\Settings;
 
-use KAGG\Settings\Abstracts\SettingsBase;
-use KAGG\Settings\Abstracts\SettingsInterface;
+use KAGG\Compatibility\Settings\Abstracts\SettingsBase;
+use KAGG\Compatibility\Settings\Abstracts\SettingsInterface;
 
 /**
  * Class Settings

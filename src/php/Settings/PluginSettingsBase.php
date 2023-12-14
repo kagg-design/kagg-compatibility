@@ -7,7 +7,7 @@
 
 namespace KAGG\Compatibility\Settings;
 
-use KAGG\Settings\Abstracts\SettingsBase;
+use KAGG\Compatibility\Settings\Abstracts\SettingsBase;
 
 /**
  * Class PluginSettingsBase
