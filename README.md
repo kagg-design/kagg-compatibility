@@ -1,17 +1,18 @@
 # KAGG Compatibility
 
-The plugin blocks PHP 8.1 deprecation messages from WordPress core, WooCommerce, Jetpack and other plugins.
+The plugin blocks error messages of any level from WordPress core, plugins, and themes.
 
-[WordPress is not fully compatible with PHP 8.0 or 8.1](https://make.wordpress.org/core/2022/01/10/wordpress-5-9-and-php-8-0-8-1/). All remaining known PHP 8.1 issues are deprecation notices.
+[WordPress is not fully compatible with PHP 8.0 - 8.3](https://make.wordpress.org/core/handbook/references/php-compatibility-and-wordpress-versions/). Remaining known PHP 8.0+ issues are deprecation notices.
 
-The same is related to many popular plugins such as WooCommerce, Jetpack and others. Mainly, they produce deprecation notices from the Action Scheduler library.
+The same is related to many popular plugins such as WooCommerce, Jetpack, Gravity Forms and others. Mainly, they produce deprecation notices from the Action Scheduler library.
 
 ![](./.wordpress-org/banner-772x250.png)
 
 ## Features
 
-* Plugin blocks all deprecation notices from WordPress core, WooCommerce, JetPack and many others using Action Scheduler library.
-* Plugin filters out errors from these libraries only. Errors produced by the user code are not blocked, which helps to debug.
+* The plugin blocks deprecation notices, user deprecation notices, notices, warnings, user notices, and user warnings.
+* The list of folders from which errors are blocked can be filtered. This list may specify any WordPress Core, plugin and theme folders.
+* Plugin filters out errors from these folders only. Errors produced by other code are not blocked, which helps in debugging user code.
 * During activation, plugin installs a mu-plugin `kagg-compatibility-error-handler.php` into the `/wp-content/mu-plugins/` folder. It contains the error handler, which loads earlier than any plugin or theme.
 
 ## Installation
