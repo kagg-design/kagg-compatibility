@@ -39,8 +39,9 @@ Yes, you can!
 
 == Changelog ==
 
-= 1.4.0 =
+= 2.0.0 =
 * Tested with WordPress 6.4.
+* Added settings page to specify the list of directories to process errors from.
 * Added ability to chain error handlers.
 * Added compatibility with Query Monitor.
 * Added filter for folders.
