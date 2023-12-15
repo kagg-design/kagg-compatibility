@@ -101,7 +101,7 @@ class MUErrorHandler {
 	 * @return void
 	 */
 	private function init_hooks(): void {
-		if ( current_action() === 'plugins_loaded' ) {
+		if ( current_action() === 'plugin_loaded' ) {
 			return;
 		}
 
