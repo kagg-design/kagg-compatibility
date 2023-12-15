@@ -26,19 +26,19 @@ class MUErrorHandler {
 	/**
 	 * Option name.
 	 */
-	private const OPTION = 'kagg_compatibility_settings';
+	const OPTION = 'kagg_compatibility_settings';
 
 	/**
 	 * Error handler option key.
 	 */
-	private const OPTION_KEY = 'dirs';
+	const OPTION_KEY = 'dirs';
 
 	/**
 	 * Directories where can deprecation error occur.
 	 *
 	 * @var string[]
 	 */
-	private array $dirs = [];
+	private $dirs = [];
 
 	/**
 	 * Previous error handler.
@@ -59,7 +59,7 @@ class MUErrorHandler {
 	 *
 	 * @return void
 	 */
-	public function init(): void {
+	public function init() {
 		$option = get_option( self::OPTION, [] );
 
 		$this->dirs = empty( $option[ self::OPTION_KEY ] ) ? [] : explode( "\n", $option[ self::OPTION_KEY ] );
@@ -100,7 +100,7 @@ class MUErrorHandler {
 	 *
 	 * @return void
 	 */
-	private function init_hooks(): void {
+	private function init_hooks() {
 		if ( current_action() === 'plugin_loaded' ) {
 			return;
 		}
@@ -111,11 +111,11 @@ class MUErrorHandler {
 
 	/**
 	 * Clear error caused by xdebug with PHP 8.1.
-	 * This error leads to adding .php-error class (2em margin-top) to the #adminmenuwrap.
+	 * This error leads to adding .php-error class (margin-top: 2em;) to the #adminmenuwrap.
 	 *
 	 * @return void
 	 */
-	public function admin_head(): void {
+	public function admin_head() {
 		$error_get_last = error_get_last();
 
 		if ( ! isset( $error_get_last['file'] ) ) {
@@ -135,7 +135,7 @@ class MUErrorHandler {
 	 *
 	 * @return void
 	 */
-	public function qm_loaded( string $plugin ): void {
+	public function qm_loaded( string $plugin ) {
 
 		if ( ! str_contains( $plugin, 'query-monitor/query-monitor.php' ) ) {
 			return;

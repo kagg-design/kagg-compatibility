@@ -13,11 +13,11 @@ namespace KAGG\Compatibility;
 class AdminNotices {
 
 	/**
-	 * Admin notices array.
+	 * The admin notices array.
 	 *
 	 * @var array
 	 */
-	private array $notices = [];
+	private $notices = [];
 
 	/**
 	 * AdminNotices constructor.
@@ -34,7 +34,7 @@ class AdminNotices {
 	 *                           is-dismissible.
 	 * @param array  $options    Notice options.
 	 */
-	public function add_notice( string $message, string $class_name = 'notice', array $options = [] ): void {
+	public function add_notice( string $message, string $class_name = 'notice', array $options = [] ) {
 		$this->notices[] = [
 			'message' => $message,
 			'class'   => $class_name,
@@ -45,7 +45,7 @@ class AdminNotices {
 	/**
 	 * Show all notices.
 	 */
-	public function show_notices(): void {
+	public function show_notices() {
 		foreach ( $this->notices as $notice ) {
 			if ( ! $this->is_screen_allowed( $notice ) ) {
 				continue;
@@ -62,7 +62,7 @@ class AdminNotices {
 	}
 
 	/**
-	 * Is current admin screen allowed to show the notice.
+	 * Whether the current admin screen is allowed to show the notice.
 	 *
 	 * @param array $notice Notice.
 	 *

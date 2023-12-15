@@ -12,7 +12,7 @@
  * Description:       Blocks error messages of any levels from WordPress core, plugins, and themes.
  * Version:           1.3.0
  * Requires at least: 5.9
- * Requires PHP:      8.1
+ * Requires PHP:      7.0
  * Author:            KAGG Design
  * Author URI:        https://profiles.wordpress.org/kaggdesign/
  * License:           GPL v2 or later

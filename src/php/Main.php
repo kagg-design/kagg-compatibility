@@ -19,21 +19,21 @@ class Main {
 	/**
 	 * Error handler filename.
 	 */
-	private const MU_FILENAME = 'kagg-compatibility-error-handler.php';
+	const MU_FILENAME = 'kagg-compatibility-error-handler.php';
 
 	/**
 	 * Error handler source path.
 	 *
 	 * @var string
 	 */
-	private string $error_handler_source;
+	private $error_handler_source;
 
 	/**
 	 * Error handler destination path.
 	 *
 	 * @var string
 	 */
-	private string $error_handler_destination;
+	private $error_handler_destination;
 
 	/**
 	 * Settings instance.
@@ -55,7 +55,7 @@ class Main {
 	 *
 	 * @return void
 	 */
-	public function init(): void {
+	public function init() {
 		$this->hooks();
 	}
 
@@ -64,7 +64,7 @@ class Main {
 	 *
 	 * @return void
 	 */
-	private function hooks(): void {
+	private function hooks() {
 		$this->settings = new Settings(
 			[
 				'KAGG Compatibility' => [ General::class ],
@@ -83,7 +83,7 @@ class Main {
 	 * @return void
 	 * @noinspection ForgottenDebugOutputInspection
 	 */
-	public function activation_hook(): void {
+	public function activation_hook() {
 		$dirs = $this->settings->get( 'dirs', [] );
 
 		if ( ! $dirs ) {
@@ -106,7 +106,7 @@ class Main {
 	 * @return void
 	 * @noinspection ForgottenDebugOutputInspection
 	 */
-	public function deactivation_hook(): void {
+	public function deactivation_hook() {
 		if ( ! $this->delete_error_handler() ) {
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( 'Cannot delete mu-plugin with error handler.' );
@@ -118,7 +118,7 @@ class Main {
 	 *
 	 * @return void
 	 */
-	public function load(): void {
+	public function load() {
 		global $wp_version;
 
 		load_plugin_textdomain(
@@ -129,10 +129,10 @@ class Main {
 
 		$admin_notices = new AdminNotices();
 
-		// The plugin works with PHP 8.1+ only.
-		if ( PHP_VERSION_ID < 80100 ) {
+		// The plugin works with PHP 7.0+ only.
+		if ( PHP_VERSION_ID < 70000 ) {
 			$admin_notices->add_notice(
-				__( 'KAGG Compatibility requires PHP version 8.1 to run.', 'kagg-compatibility' ),
+				__( 'KAGG Compatibility requires PHP version 7.0 to run.', 'kagg-compatibility' ),
 				'notice notice-error'
 			);
 
@@ -154,7 +154,7 @@ class Main {
 	 *
 	 * @return WP_Filesystem_Base|null
 	 */
-	private function get_filesystem_direct(): ?WP_Filesystem_Base {
+	private function get_filesystem_direct() {
 
 		global $wp_filesystem;
 

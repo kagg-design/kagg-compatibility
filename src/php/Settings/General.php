@@ -37,11 +37,6 @@ class General extends PluginSettingsBase {
 	const SECTION_PARAMETERS = 'parameters';
 
 	/**
-	 * Live mode.
-	 */
-	const MODE_LIVE = 'live';
-
-	/**
 	 * Get page title.
 	 *
 	 * @return string
