@@ -26,7 +26,7 @@ class MUErrorHandler {
 	/**
 	 * Option name.
 	 */
-	private const OPTION = 'kagg-compatibility-settings';
+	private const OPTION = 'kagg_compatibility_settings';
 
 	/**
 	 * Error handler option key.
@@ -62,18 +62,19 @@ class MUErrorHandler {
 	public function init(): void {
 		$option = get_option( self::OPTION, [] );
 
-		$this->dirs = empty( $option[ self::OPTION_KEY ] ) ? [] : $option[ self::OPTION_KEY ];
+		$this->dirs = empty( $option[ self::OPTION_KEY ] ) ? [] : explode( "\n", $option[ self::OPTION_KEY ] );
 
 		if ( ! $this->dirs ) {
 			return;
 		}
 
-		$this->dirs = array_map(
-			static function ( $dir ) {
-
-				return str_replace( DIRECTORY_SEPARATOR, '/', $dir );
-			},
-			$this->dirs
+		$this->dirs = array_filter(
+			array_map(
+				static function ( $dir ) {
+					return str_replace( DIRECTORY_SEPARATOR, '/', trim( $dir ) );
+				},
+				$this->dirs
+			)
 		);
 
 		/**

@@ -99,6 +99,25 @@ class Settings implements SettingsInterface {
 	}
 
 	/**
+	 * Get tab.
+	 *
+	 * @param string $classname Class name.
+	 *
+	 * @return SettingsBase|null
+	 */
+	public function get_tab( $classname ) {
+		$tabs = $this->tabs;
+
+		foreach ( $tabs as $tab ) {
+			if ( $tab instanceof $classname ) {
+				return $tab;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Get plugin option.
 	 *
 	 * @param string $key         Setting name.
