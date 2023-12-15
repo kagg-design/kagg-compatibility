@@ -160,7 +160,7 @@ abstract class PluginSettingsBase extends SettingsBase {
 	 * Setup settings fields.
 	 */
 	public function setup_fields() {
-		$prefix = $this->option_page() . '-' . static::section_title() . '-';
+		$prefix = $this->option_page() . '-' . $this->section_title() . '-';
 
 		foreach ( $this->form_fields as $key => $form_field ) {
 			if ( ! isset( $form_field['class'] ) ) {
