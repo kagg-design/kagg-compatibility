@@ -39,6 +39,9 @@ Yes, you can!
 
 == Changelog ==
 
+= 2.0.1 =
+* Fix conflict with hCaptcha plugin.
+
 = 2.0.0 =
 * Tested with WordPress 6.4.
 * Added settings page to specify the list of directories to process errors from.
