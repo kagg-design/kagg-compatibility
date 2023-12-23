@@ -174,8 +174,8 @@ class General extends PluginSettingsBase {
 			ABSPATH . WPINC . '/', // WordPress wp-includes.
 			ABSPATH . 'wp-admin/', // WordPress wp-admin.
 			// Known libraries in different plugins producing deprecated messages.
-			'/vendor/rmccue/requests/', // Requests library used in WP-CLI.
-			'/vendor/woocommerce/action-scheduler/', // Action Scheduler.
+			'/rmccue/requests/', // Requests library used in WP-CLI.
+			'/action-scheduler/', // Action Scheduler.
 			// Plugins producing deprecated messages.
 			WP_PLUGIN_DIR . '/backwpup/', // BackWPup.
 			WP_PLUGIN_DIR . '/business-reviews-bundle/', // Business review bundle.
