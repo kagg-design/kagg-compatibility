@@ -39,8 +39,11 @@ Yes, you can!
 
 == Changelog ==
 
+= 2.0.2 =
+* Fixed improper display of the "rate plugin" message on options.php.
+
 = 2.0.1 =
-* Fix conflict with hCaptcha plugin.
+* Fixed conflict with hCaptcha plugin.
 
 = 2.0.0 =
 * Tested with WordPress 6.4.
