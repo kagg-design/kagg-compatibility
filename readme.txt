@@ -39,6 +39,9 @@ Yes, you can!
 
 == Changelog ==
 
+= 2.0.3 =
+* Added normalization of dirs to handle errors from.
+
 = 2.0.2 =
 * Fixed improper display of the "rate plugin" message on options.php.
 * Fixed fatal error with improperly coded third-party error handlers.
