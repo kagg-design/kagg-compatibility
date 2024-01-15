@@ -178,7 +178,7 @@ abstract class PluginSettingsBase extends SettingsBase {
 		?>
 		<h1 class="kagg-compatibility-settings-header">
 			<img
-					src="<?php echo esc_url( constant( $this->constant_prefix . '_URL' ) . '/assets/images/icon.png' ); ?>"
+					src="<?php echo esc_url( constant( $this->constant_prefix . '_URL' ) . '/assets/images/icon.svg' ); ?>"
 					alt="KAGG Compatibility Logo"
 					class="<?php echo esc_attr( self::SLUG ); ?>-logo"
 			/>
