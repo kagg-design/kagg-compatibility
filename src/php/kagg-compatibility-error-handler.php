@@ -154,16 +154,18 @@ class MUErrorHandler {
 	 * @param int    $line    Line number.
 	 *
 	 * @return bool
+	 * @noinspection PhpTernaryExpressionCanBeReplacedWithConditionInspection
 	 */
 	public function error_handler( int $level, string $message, string $file, int $line ): bool {
 		if ( ( $level & $this->levels ) === 0 ) {
-			// Use standard error handler.
+			// It's not an error level we suppress.
 			return null === $this->previous_error_handler ?
-				false :
+				false : // Use standard error handler.
 				// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
-				call_user_func_array( $this->previous_error_handler, func_get_args() );
+				(bool) call_user_func_array( $this->previous_error_handler, func_get_args() );
 		}
 
+		// Process error.
 		$normalized_file = str_replace( DIRECTORY_SEPARATOR, '/', $file );
 
 		foreach ( $this->dirs as $dir ) {
@@ -173,11 +175,10 @@ class MUErrorHandler {
 			}
 		}
 
-		// Use standard error handler.
 		return null === $this->previous_error_handler ?
-			false :
+			false : // Use standard error handler.
 			// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
-			call_user_func_array( $this->previous_error_handler, func_get_args() );
+			(bool) call_user_func_array( $this->previous_error_handler, func_get_args() );
 	}
 }
 
