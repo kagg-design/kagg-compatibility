@@ -34,7 +34,7 @@ class MUErrorHandler {
 	const OPTION_KEY = 'dirs';
 
 	/**
-	 * Directories where can deprecation error occur.
+	 * Directories from where errors should be suppressed.
 	 *
 	 * @var string[]
 	 */
@@ -64,18 +64,20 @@ class MUErrorHandler {
 
 		$this->dirs = empty( $option[ self::OPTION_KEY ] ) ? [] : explode( "\n", $option[ self::OPTION_KEY ] );
 
+		$this->normalize_dirs();
+
+		/**
+		 * Allow modifying the list of dirs to suppress messages from.
+		 *
+		 * @param bool $dirs The list of dirs to suppress messages from.
+		 */
+		$this->dirs = (array) apply_filters( 'kagg_compatibility_dirs', $this->dirs );
+
+		$this->normalize_dirs();
+
 		if ( ! $this->dirs ) {
 			return;
 		}
-
-		$this->dirs = array_filter(
-			array_map(
-				static function ( $dir ) {
-					return str_replace( DIRECTORY_SEPARATOR, '/', trim( $dir ) );
-				},
-				$this->dirs
-			)
-		);
 
 		/**
 		 * Allow modifying the levels of messages to suppress.
@@ -86,6 +88,10 @@ class MUErrorHandler {
 			'wpf_error_handler_level',
 			E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE | E_DEPRECATED | E_USER_DEPRECATED
 		);
+
+		if ( 0 === $this->levels ) {
+			return;
+		}
 
 		// Set this error handler early to catch any errors on the plugin loading stage.
 		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
@@ -179,6 +185,22 @@ class MUErrorHandler {
 			false : // Use standard error handler.
 			// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
 			(bool) call_user_func_array( $this->previous_error_handler, func_get_args() );
+	}
+
+	/**
+	 * Normalize dirs.
+	 *
+	 * @return void
+	 */
+	private function normalize_dirs() {
+		$this->dirs = array_filter(
+			array_map(
+				static function ( $dir ) {
+					return str_replace( DIRECTORY_SEPARATOR, '/', trim( $dir ) );
+				},
+				$this->dirs
+			)
+		);
 	}
 }
 
