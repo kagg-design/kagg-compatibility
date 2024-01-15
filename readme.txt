@@ -41,6 +41,7 @@ Yes, you can!
 
 = 2.0.2 =
 * Fixed improper display of the "rate plugin" message on options.php.
+* Fixed fatal error with improperly coded third-party error handlers.
 
 = 2.0.1 =
 * Fixed conflict with hCaptcha plugin.
