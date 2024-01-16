@@ -181,6 +181,8 @@ class General extends PluginSettingsBase {
 			WP_PLUGIN_DIR . '/business-reviews-bundle/', // Business review bundle.
 			WP_PLUGIN_DIR . '/cloudflare/', // Cloudflare.
 			WP_PLUGIN_DIR . '/easy-digital-downloads/', // Easy Digital Downloads.
+			WP_PLUGIN_DIR . '/elementor/', // Elementor.
+			WP_PLUGIN_DIR . '/elementor-pro/', // Elementor Pro.
 			WP_PLUGIN_DIR . '/google-site-kit/', // Google Site Kit.
 			WP_PLUGIN_DIR . '/gravityforms/', // Gravity Forms.
 			WP_PLUGIN_DIR . '/gravityperks/', // Gravity Perks.

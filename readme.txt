@@ -41,6 +41,7 @@ Yes, you can!
 
 = 2.0.3 =
 * Added normalization of dirs to handle errors from.
+* Added plugins' directories to the default list.
 
 = 2.0.2 =
 * Fixed improper display of the "rate plugin" message on options.php.
