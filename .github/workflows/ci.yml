@@ -23,7 +23,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
 
       - name: Install dependencies with caching
-        uses: ramsey/composer-install@v2
+        uses: kagg-design/composer-install@v2
 
       - name: Run code sniffer
         run: composer phpcs --colors
