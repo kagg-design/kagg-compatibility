@@ -2,8 +2,8 @@
 Contributors: kaggdesign
 Tags: compatibility, development, deprecated, notice, warning
 Requires at least: 5.9
-Tested up to: 6.4
-Stable tag: 2.0.2
+Tested up to: 6.5
+Stable tag: 2.1.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -38,6 +38,10 @@ Yes, you can!
 * Join in on our [GitHub repository](https://github.com/kagg-design/kagg-compatibility)
 
 == Changelog ==
+
+= 2.1.0 =
+* Tested with WordPress 6.5.
+* Tested with WooCommerce 8.6.
 
 = 2.0.3 =
 * Added normalization of dirs to handle errors from.
