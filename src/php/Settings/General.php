@@ -177,6 +177,7 @@ class General extends PluginSettingsBase {
 			'/rmccue/requests/', // Requests library used in WP-CLI.
 			'/action-scheduler/', // Action Scheduler.
 			// Plugins producing deprecated messages.
+			WP_PLUGIN_DIR . '/advanced-custom-fields-pro/', // Advanced Custom Fields Pro.
 			WP_PLUGIN_DIR . '/backwpup/', // BackWPup.
 			WP_PLUGIN_DIR . '/business-reviews-bundle/', // Business review bundle.
 			WP_PLUGIN_DIR . '/cloudflare/', // Cloudflare.
@@ -187,6 +188,7 @@ class General extends PluginSettingsBase {
 			WP_PLUGIN_DIR . '/gravityforms/', // Gravity Forms.
 			WP_PLUGIN_DIR . '/gravityperks/', // Gravity Perks.
 			WP_PLUGIN_DIR . '/mailpoet/', // MailPoet.
+			WP_PLUGIN_DIR . '/pagelayer/', // Pagelayer.
 			WP_PLUGIN_DIR . '/seo-by-rank-math/', // Rank Math SEO.
 			WP_PLUGIN_DIR . '/sitepress-multilingual-cms/', // WPML.
 			WP_PLUGIN_DIR . '/woocommerce/', // WooCommerce.
@@ -195,7 +197,9 @@ class General extends PluginSettingsBase {
 			WP_PLUGIN_DIR . '/wp-seo-multilingual/', // WPML SEO.
 			WP_PLUGIN_DIR . '/wp-super-cache/', // WP Super Cache.
 			// Themes producing deprecated messages.
+			WP_CONTENT_DIR . '/themes/Avada/', // Avada Theme.
 			WP_CONTENT_DIR . '/themes/Divi/', // Divi Theme.
+			WP_CONTENT_DIR . '/themes/popularfx/', // Popular FX Theme.
 		];
 
 		$abspath = str_replace( '\\', '/', realpath( ABSPATH ) );
