@@ -55,7 +55,7 @@ class Settings implements SettingsInterface {
 	/**
 	 * Init class.
 	 */
-	protected function init() {
+	protected function init(): void {
 		foreach ( $this->menu_pages_classes as $menu_page_classes ) {
 			$tab_classes = (array) $menu_page_classes;
 
@@ -93,6 +93,7 @@ class Settings implements SettingsInterface {
 	 * Get tabs.
 	 *
 	 * @return array
+	 * @noinspection PhpUnused
 	 */
 	public function get_tabs(): array {
 		return $this->tabs;
@@ -105,7 +106,7 @@ class Settings implements SettingsInterface {
 	 *
 	 * @return SettingsBase|null
 	 */
-	public function get_tab( $classname ) {
+	public function get_tab( $classname ): ?SettingsBase {
 		$tabs = $this->tabs;
 
 		foreach ( $tabs as $tab ) {
@@ -172,7 +173,7 @@ class Settings implements SettingsInterface {
 	}
 
 	/**
-	 * Check whether option value equals to the compared.
+	 * Check whether option value equals to the compared value.
 	 *
 	 * @param string $key     Setting name.
 	 * @param string $compare Compared value.
@@ -195,31 +196,10 @@ class Settings implements SettingsInterface {
 	 * @param string $key Setting name.
 	 *
 	 * @return bool
+	 * @noinspection PhpUnused
 	 */
 	public function is_on( string $key ): bool {
 		return ! empty( $this->get( $key ) );
-	}
-
-	/**
-	 * Set field.
-	 *
-	 * @param string $key       Setting name.
-	 * @param string $field_key Field key.
-	 * @param mixed  $value     Value.
-	 *
-	 * @return void
-	 */
-	public function set_field( string $key, string $field_key, $value ) {
-		foreach ( $this->tabs as $tab ) {
-			/**
-			 * Page / Tab.
-			 *
-			 * @var SettingsBase $tab
-			 */
-			if ( $tab->set_field( $key, $field_key, $value ) ) {
-				break;
-			}
-		}
 	}
 
 	/**

@@ -6,6 +6,7 @@
 	<file>.</file>
 	<exclude-pattern>*/\.github/*</exclude-pattern>
 	<exclude-pattern>*/\.wordpress-org/*</exclude-pattern>
+	<exclude-pattern>*/assets/*</exclude-pattern>
 	<exclude-pattern>*/languages/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 
@@ -17,7 +18,7 @@
 	<arg name="cache" value=".phpcs.cache"/>
 
 	<config name="installed_paths" value="vendor/phpcompatibility/php-compatibility,vendor/phpcompatibility/phpcompatibility-paragonie,vendor/phpcompatibility/phpcompatibility-wp,vendor/phpcsstandards/phpcsextra,vendor/phpcsstandards/phpcsutils,vendor/wp-coding-standards/wpcs"/>
-	<config name="testVersion" value="8.1-"/>
+	<config name="testVersion" value="7.2-"/>
 
 	<!-- Rules: Check PHP version compatibility -->
 	<rule ref="PHPCompatibility"/>

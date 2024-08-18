@@ -19,7 +19,7 @@ abstract class PluginSettingsBase extends SettingsBase {
 	/**
 	 * Plugin slug.
 	 */
-	const SLUG = 'kagg-compatibility';
+	protected const SLUG = 'kagg-compatibility';
 
 	/**
 	 * Plugin name.
@@ -159,7 +159,7 @@ abstract class PluginSettingsBase extends SettingsBase {
 	/**
 	 * Setup settings fields.
 	 */
-	public function setup_fields() {
+	public function setup_fields(): void {
 		$prefix = $this->option_page() . '-' . $this->section_title() . '-';
 
 		foreach ( $this->form_fields as $key => $form_field ) {
@@ -174,7 +174,7 @@ abstract class PluginSettingsBase extends SettingsBase {
 	/**
 	 * Show settings page.
 	 */
-	public function settings_page() {
+	public function settings_page(): void {
 		?>
 		<h1 class="kagg-compatibility-settings-header">
 			<img

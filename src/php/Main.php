@@ -19,7 +19,7 @@ class Main {
 	/**
 	 * Error handler filename.
 	 */
-	const MU_FILENAME = 'kagg-compatibility-error-handler.php';
+	private const MU_FILENAME = 'kagg-compatibility-error-handler.php';
 
 	/**
 	 * Error handler source path.
@@ -55,7 +55,7 @@ class Main {
 	 *
 	 * @return void
 	 */
-	public function init() {
+	public function init(): void {
 		$this->hooks();
 	}
 
@@ -64,7 +64,7 @@ class Main {
 	 *
 	 * @return void
 	 */
-	private function hooks() {
+	private function hooks(): void {
 		$this->settings = new Settings(
 			[
 				'KAGG Compatibility' => [ General::class ],
@@ -83,7 +83,7 @@ class Main {
 	 * @return void
 	 * @noinspection ForgottenDebugOutputInspection
 	 */
-	public function activation_hook() {
+	public function activation_hook(): void {
 		$dirs = $this->settings->get( 'dirs', [] );
 
 		if ( ! $dirs ) {
@@ -106,7 +106,7 @@ class Main {
 	 * @return void
 	 * @noinspection ForgottenDebugOutputInspection
 	 */
-	public function deactivation_hook() {
+	public function deactivation_hook(): void {
 		if ( ! $this->delete_error_handler() ) {
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( 'Cannot delete mu-plugin with error handler.' );
@@ -118,7 +118,7 @@ class Main {
 	 *
 	 * @return void
 	 */
-	public function load() {
+	public function load(): void {
 		global $wp_version;
 
 		load_plugin_textdomain(
@@ -154,7 +154,7 @@ class Main {
 	 *
 	 * @return WP_Filesystem_Base|null
 	 */
-	private function get_filesystem_direct() {
+	private function get_filesystem_direct(): ?WP_Filesystem_Base {
 
 		global $wp_filesystem;
 
@@ -170,7 +170,7 @@ class Main {
 	}
 
 	/**
-	 * Copy error handler file to the mu-plugins folder.
+	 * Copy the error handler file to the mu-plugins folder.
 	 *
 	 * @return bool
 	 */

@@ -26,12 +26,12 @@ class MUErrorHandler {
 	/**
 	 * Option name.
 	 */
-	const OPTION = 'kagg_compatibility_settings';
+	private const OPTION = 'kagg_compatibility_settings';
 
 	/**
 	 * Error handler option key.
 	 */
-	const OPTION_KEY = 'dirs';
+	private const OPTION_KEY = 'dirs';
 
 	/**
 	 * Directories from where errors should be suppressed.
@@ -59,7 +59,7 @@ class MUErrorHandler {
 	 *
 	 * @return void
 	 */
-	public function init() {
+	public function init(): void {
 		$option = get_option( self::OPTION, [] );
 
 		$this->dirs = empty( $option[ self::OPTION_KEY ] ) ? [] : explode( "\n", $option[ self::OPTION_KEY ] );
@@ -106,7 +106,7 @@ class MUErrorHandler {
 	 *
 	 * @return void
 	 */
-	private function init_hooks() {
+	private function init_hooks(): void {
 		if ( current_action() === 'plugin_loaded' ) {
 			return;
 		}
@@ -121,7 +121,7 @@ class MUErrorHandler {
 	 *
 	 * @return void
 	 */
-	public function admin_head() {
+	public function admin_head(): void {
 		$error_get_last = error_get_last();
 
 		if ( ! isset( $error_get_last['file'] ) ) {
@@ -141,7 +141,7 @@ class MUErrorHandler {
 	 *
 	 * @return void
 	 */
-	public function qm_loaded( string $plugin ) {
+	public function qm_loaded( string $plugin ): void {
 
 		if ( ! str_contains( $plugin, 'query-monitor/query-monitor.php' ) ) {
 			return;
@@ -192,7 +192,7 @@ class MUErrorHandler {
 	 *
 	 * @return void
 	 */
-	private function normalize_dirs() {
+	private function normalize_dirs(): void {
 		$this->dirs = array_filter(
 			array_map(
 				static function ( $dir ) {

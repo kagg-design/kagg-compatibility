@@ -19,22 +19,22 @@ class General extends PluginSettingsBase {
 	/**
 	 * Admin script handle.
 	 */
-	const HANDLE = 'kagg-compatibility-general';
+	protected const HANDLE = 'kagg-compatibility-general';
 
 	/**
 	 * Script localization object.
 	 */
-	const OBJECT = 'KAGGCompatibilityGeneralObject';
+	private const OBJECT = 'KAGGCompatibilityGeneralObject';
 
 	/**
 	 * Reset action.
 	 */
-	const RESET_ACTION = 'kagg-compatibility-general-reset';
+	private const RESET_ACTION = 'kagg-compatibility-general-reset';
 
 	/**
 	 * Parameters section id.
 	 */
-	const SECTION_PARAMETERS = 'parameters';
+	private const SECTION_PARAMETERS = 'parameters';
 
 	/**
 	 * Get page title.
@@ -57,7 +57,7 @@ class General extends PluginSettingsBase {
 	/**
 	 * Init class hooks.
 	 */
-	protected function init_hooks() {
+	protected function init_hooks(): void {
 		parent::init_hooks();
 
 		add_action( 'wp_ajax_' . self::RESET_ACTION, [ $this, 'reset' ] );
@@ -66,7 +66,7 @@ class General extends PluginSettingsBase {
 	/**
 	 * Init form fields.
 	 */
-	public function init_form_fields() {
+	public function init_form_fields(): void {
 		$this->form_fields = [
 			'dirs' => [
 				'label'   => __( 'Directories', 'kagg-compatibility' ),
@@ -79,7 +79,7 @@ class General extends PluginSettingsBase {
 	/**
 	 * Setup settings fields.
 	 */
-	public function setup_fields() {
+	public function setup_fields(): void {
 		if ( ! $this->is_options_screen() ) {
 			return;
 		}
@@ -90,7 +90,7 @@ class General extends PluginSettingsBase {
 	/**
 	 * Show settings page.
 	 */
-	public function settings_page() {
+	public function settings_page(): void {
 		parent::settings_page();
 
 		submit_button(
@@ -106,7 +106,7 @@ class General extends PluginSettingsBase {
 	 *
 	 * @param array $arguments Section arguments.
 	 */
-	public function section_callback( array $arguments ) {
+	public function section_callback( array $arguments ): void {
 		if ( self::SECTION_PARAMETERS !== $arguments['id'] ) {
 			return;
 		}
@@ -124,7 +124,7 @@ class General extends PluginSettingsBase {
 	/**
 	 * Enqueue class scripts.
 	 */
-	public function admin_enqueue_scripts() {
+	public function admin_enqueue_scripts(): void {
 		wp_enqueue_script(
 			self::HANDLE,
 			constant( 'KAGG_COMPATIBILITY_URL' ) . "/assets/js/general$this->min_prefix.js",
@@ -157,7 +157,7 @@ class General extends PluginSettingsBase {
 	 *
 	 * @return void
 	 */
-	public function reset() {
+	public function reset(): void {
 		$this->update_option( 'dirs', implode( "\n", $this->init_dirs() ) );
 
 		wp_send_json_success();
@@ -221,7 +221,7 @@ class General extends PluginSettingsBase {
 	 *
 	 * @return void
 	 */
-	private function print_section_header( string $id, string $title ) {
+	private function print_section_header( string $id, string $title ): void {
 		?>
 		<h3 class="<?php echo esc_attr( self::SLUG ); ?>-section-<?php echo esc_attr( $id ); ?>">
 			<?php echo esc_html( $title ); ?>
