@@ -36,7 +36,7 @@ if ( defined( 'KAGG_COMPATIBILITY_VERSION' ) ) {
 /**
  * Plugin version.
  */
-define( 'KAGG_COMPATIBILITY_VERSION', '2.1.0' );
+define( 'KAGG_COMPATIBILITY_VERSION', '2.2.0' );
 
 /**
  * Path to the plugin dir.
