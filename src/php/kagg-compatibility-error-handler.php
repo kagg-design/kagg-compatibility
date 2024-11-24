@@ -55,13 +55,19 @@ class MUErrorHandler {
 	private $levels;
 
 	/**
+	 * Whether the error handler is handling an error.
+	 *
+	 * @var bool
+	 */
+	private $handling = false;
+
+	/**
 	 * Init class.
 	 *
 	 * @return void
 	 */
 	public function init(): void {
-		$option = get_option( self::OPTION, [] );
-
+		$option     = get_option( self::OPTION, [] );
 		$this->dirs = empty( $option[ self::OPTION_KEY ] ) ? [] : explode( "\n", $option[ self::OPTION_KEY ] );
 
 		$this->normalize_dirs();
@@ -93,11 +99,7 @@ class MUErrorHandler {
 			return;
 		}
 
-		// Set this error handler early to catch any errors on the plugin loading stage.
-		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
-		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
-		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
-
+		$this->set_error_handler();
 		$this->init_hooks();
 	}
 
@@ -107,12 +109,50 @@ class MUErrorHandler {
 	 * @return void
 	 */
 	private function init_hooks(): void {
-		if ( current_action() === 'plugin_loaded' ) {
+		// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
+		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 1000 );
+		add_action( 'admin_head', [ $this, 'admin_head' ] );
+	}
+
+	/**
+	 * Set error handler and save original.
+	 * To chain error handlers, we must not specify the second argument and catch all errors in our handler.
+	 */
+	private function set_error_handler(): void {
+
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
+		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
+	}
+
+	/**
+	 * The 'plugins_loaded' hook.
+	 *
+	 * @return void
+	 */
+	public function plugins_loaded(): void {
+
+		// Constants of plugins that destroy an error handler chain.
+		$constants = [
+			'QM_VERSION', // Query Monitor.
+			'AUTOMATOR_PLUGIN_VERSION', // Uncanny Automator.
+		];
+
+		$found = false;
+
+		foreach ( $constants as $constant ) {
+			if ( defined( $constant ) ) {
+				$found = true;
+
+				break;
+			}
+		}
+
+		if ( ! $found ) {
 			return;
 		}
 
-		add_action( 'admin_head', [ $this, 'admin_head' ] );
-		add_action( 'plugin_loaded', [ $this, 'qm_loaded' ] );
+		// Set this error handler after loading a plugin to chain its error handler.
+		$this->set_error_handler();
 	}
 
 	/**
@@ -135,23 +175,6 @@ class MUErrorHandler {
 	}
 
 	/**
-	 * QM loaded hook.
-	 *
-	 * @param string $plugin Full path to the plugin's main file.
-	 *
-	 * @return void
-	 */
-	public function qm_loaded( string $plugin ): void {
-
-		if ( ! str_contains( $plugin, 'query-monitor/query-monitor.php' ) ) {
-			return;
-		}
-
-		// Set this error handler after loading the Query Monitor plugin to chain its error handler.
-		( new self() )->init();
-	}
-
-	/**
 	 * Error handler.
 	 *
 	 * @param int    $level   Error level.
@@ -163,12 +186,19 @@ class MUErrorHandler {
 	 * @noinspection PhpTernaryExpressionCanBeReplacedWithConditionInspection
 	 */
 	public function error_handler( int $level, string $message, string $file, int $line ): bool {
+		if ( $this->handling ) {
+			$this->handling = false;
+
+			// Prevent infinite recursion and fallback to standard error handler.
+			return false;
+		}
+
+		$this->handling = true;
+
 		if ( ( $level & $this->levels ) === 0 ) {
-			// It's not an error level we suppress.
-			return null === $this->previous_error_handler ?
-				false : // Use standard error handler.
-				// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
-				(bool) call_user_func_array( $this->previous_error_handler, func_get_args() );
+			// Not served error level, use fallback error handler.
+			// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
+			return $this->fallback_error_handler( func_get_args() );
 		}
 
 		// Process error.
@@ -176,15 +206,31 @@ class MUErrorHandler {
 
 		foreach ( $this->dirs as $dir ) {
 			if ( str_contains( $normalized_file, $dir ) ) {
+				$this->handling = false;
+
 				// Suppress deprecated errors from this directory.
 				return true;
 			}
 		}
 
+		// Not served directory, use fallback error handler.
+		// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
+		return $this->fallback_error_handler( func_get_args() );
+	}
+
+	/**
+	 * Fallback error handler.
+	 *
+	 * @param array $args Arguments.
+	 *
+	 * @return bool
+	 * @noinspection PhpTernaryExpressionCanBeReplacedWithConditionInspection
+	 */
+	private function fallback_error_handler( array $args ): bool {
 		return null === $this->previous_error_handler ?
-			false : // Use standard error handler.
-			// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
-			(bool) call_user_func_array( $this->previous_error_handler, func_get_args() );
+			// Use standard error handler.
+			false :
+			(bool) call_user_func_array( $this->previous_error_handler, $args );
 	}
 
 	/**
