@@ -12,7 +12,7 @@ The plugin blocks error messages of any level from WordPress core, plugins, and 
 
 == Description ==
 
-[WordPress is not fully compatible with PHP 8.0 - 8.3](https://make.wordpress.org/core/handbook/references/php-compatibility-and-wordpress-versions/). Remaining known PHP 8.0+ issues are deprecation notices.
+[WordPress is not fully compatible with PHP 8.0 - 8.4](https://make.wordpress.org/core/handbook/references/php-compatibility-and-wordpress-versions/). Remaining known PHP 8.0+ issues are deprecation notices.
 
 The same is related to many popular plugins such as WooCommerce, Jetpack, Gravity Forms and others. Mainly, they produce deprecation notices from the Action Scheduler library.
 
@@ -40,6 +40,7 @@ Yes, you can!
 == Changelog ==
 
 = 2.3.0 =
+* Tested with PHP 8.4.
 * Tested with WordPress 6.7.
 
 = 2.2.0 =
