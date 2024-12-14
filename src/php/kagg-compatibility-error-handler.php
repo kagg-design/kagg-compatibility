@@ -227,10 +227,14 @@ class MUErrorHandler {
 	 * @noinspection PhpTernaryExpressionCanBeReplacedWithConditionInspection
 	 */
 	private function fallback_error_handler( array $args ): bool {
-		return null === $this->previous_error_handler ?
+		$result = null === $this->previous_error_handler ?
 			// Use standard error handler.
 			false :
 			(bool) call_user_func_array( $this->previous_error_handler, $args );
+
+		$this->handling = false;
+
+		return $result;
 	}
 
 	/**
