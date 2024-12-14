@@ -65,8 +65,13 @@ class MUErrorHandler {
 	 * Init class.
 	 *
 	 * @return void
+	 * @noinspection PhpUndefinedConstantInspection
 	 */
 	public function init(): void {
+		if ( defined( 'KAGG_DISABLE_ERROR_HANDLER' ) && KAGG_DISABLE_ERROR_HANDLER ) {
+			return;
+		}
+
 		$option     = get_option( self::OPTION, [] );
 		$this->dirs = empty( $option[ self::OPTION_KEY ] ) ? [] : explode( "\n", $option[ self::OPTION_KEY ] );
 

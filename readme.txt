@@ -40,6 +40,7 @@ Yes, you can!
 == Changelog ==
 
 = 2.3.1 =
+* Added KAGG_DISABLE_ERROR_HANDLER constant to disable the error handler.
 * Fixed skipping suppression of some errors.
 
 = 2.3.0 =
