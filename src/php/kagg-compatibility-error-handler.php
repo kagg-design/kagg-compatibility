@@ -96,7 +96,7 @@ class MUErrorHandler {
 		 * @param bool $level Error levels of messages to suppress.
 		 */
 		$this->levels = (int) apply_filters(
-			'wpf_error_handler_level',
+			'kagg_compatibility_level',
 			E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE | E_DEPRECATED | E_USER_DEPRECATED
 		);
 
