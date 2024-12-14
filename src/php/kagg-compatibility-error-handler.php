@@ -114,27 +114,16 @@ class MUErrorHandler {
 	 * @return void
 	 */
 	private function init_hooks(): void {
-		// Block WPForms error handler.
-		// Prevention of infinite recursion does not work when two error handlers are active.
-		add_filter(
-			'wpforms_error_handler_dirs',
-			static function () {
+		$return_empty_array = static function () {
+			return [];
+		};
 
-				return [];
-			},
-			PHP_INT_MAX
-		);
+		// Prevention of infinite recursion does not work when two error handlers are active.
+		// Block WPForms error handler.
+		add_filter( 'wpforms_error_handler_dirs', $return_empty_array, PHP_INT_MAX );
 
 		// Block WPF error handler.
-		// Prevention of infinite recursion does not work when two error handlers are active.
-		add_filter(
-			'wpf_error_handler_dirs',
-			static function () {
-
-				return [];
-			},
-			PHP_INT_MAX
-		);
+		add_filter( 'wpf_error_handler_dirs', $return_empty_array, PHP_INT_MAX );
 
 		add_action( 'admin_head', [ $this, 'admin_head' ] );
 		add_action( 'action_scheduler_before_execute', [ $this, 'set_error_handler' ], 1000 );
