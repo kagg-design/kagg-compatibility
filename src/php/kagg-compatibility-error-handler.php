@@ -114,19 +114,62 @@ class MUErrorHandler {
 	 * @return void
 	 */
 	private function init_hooks(): void {
+		// Block WPForms error handler.
+		// Prevention of infinite recursion does not work when two error handlers are active.
+		add_filter(
+			'wpforms_error_handler_dirs',
+			static function () {
+
+				return [];
+			},
+			PHP_INT_MAX
+		);
+
+		// Block WPF error handler.
+		// Prevention of infinite recursion does not work when two error handlers are active.
+		add_filter(
+			'wpf_error_handler_dirs',
+			static function () {
+
+				return [];
+			},
+			PHP_INT_MAX
+		);
+
+		add_action( 'admin_head', [ $this, 'admin_head' ] );
+		add_action( 'action_scheduler_before_execute', [ $this, 'set_error_handler' ], 1000 );
+
 		// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
 		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 1000 );
-		add_action( 'admin_head', [ $this, 'admin_head' ] );
 	}
 
 	/**
 	 * Set error handler and save original.
-	 * To chain error handlers, we must not specify the second argument and catch all errors in our handler.
 	 */
-	private function set_error_handler(): void {
+	public function set_error_handler(): void {
 
+		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
 		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
+	}
+
+	/**
+	 * Clear error caused by xdebug with PHP 8.1.
+	 * This error leads to adding .php-error class (margin-top: 2em;) to the #adminmenuwrap.
+	 *
+	 * @return void
+	 */
+	public function admin_head(): void {
+		$error_get_last = error_get_last();
+
+		if ( ! isset( $error_get_last['file'] ) ) {
+			return;
+		}
+
+		if ( 'xdebug://debug-eval' === $error_get_last['file'] ) {
+			// phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.error_clear_lastFound
+			error_clear_last();
+		}
 	}
 
 	/**
@@ -158,25 +201,6 @@ class MUErrorHandler {
 
 		// Set this error handler after loading a plugin to chain its error handler.
 		$this->set_error_handler();
-	}
-
-	/**
-	 * Clear error caused by xdebug with PHP 8.1.
-	 * This error leads to adding .php-error class (margin-top: 2em;) to the #adminmenuwrap.
-	 *
-	 * @return void
-	 */
-	public function admin_head(): void {
-		$error_get_last = error_get_last();
-
-		if ( ! isset( $error_get_last['file'] ) ) {
-			return;
-		}
-
-		if ( 'xdebug://debug-eval' === $error_get_last['file'] ) {
-			// phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.error_clear_lastFound
-			error_clear_last();
-		}
 	}
 
 	/**
