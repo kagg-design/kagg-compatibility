@@ -62,6 +62,17 @@ class MUErrorHandler {
 	private $handling = false;
 
 	/**
+	 * Class constructor.
+	 *
+	 * @param array $dirs   Directories from where errors should be suppressed.
+	 * @param int   $levels Error levels to suppress.
+	 */
+	public function __construct( array $dirs = [], int $levels = 0 ) {
+		$this->dirs   = $dirs;
+		$this->levels = $levels;
+	}
+
+	/**
 	 * Init class.
 	 *
 	 * @return void
@@ -93,10 +104,10 @@ class MUErrorHandler {
 		/**
 		 * Allow modifying the levels of messages to suppress.
 		 *
-		 * @param bool $level Error levels of messages to suppress.
+		 * @param bool $levels Error levels of messages to suppress.
 		 */
 		$this->levels = (int) apply_filters(
-			'kagg_compatibility_level',
+			'kagg_compatibility_levels',
 			E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE | E_DEPRECATED | E_USER_DEPRECATED
 		);
 
@@ -129,7 +140,7 @@ class MUErrorHandler {
 		add_action( 'action_scheduler_before_execute', [ $this, 'set_error_handler' ], 1000 );
 
 		// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
-		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 1000 );
+		add_action( 'plugin_loaded', [ $this, 'plugin_loaded' ] );
 	}
 
 	/**
@@ -137,9 +148,11 @@ class MUErrorHandler {
 	 */
 	public function set_error_handler(): void {
 
+		$error_handler = new self( $this->dirs, $this->levels );
+
 		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
-		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
+		$this->previous_error_handler = set_error_handler( [ $error_handler, 'error_handler' ] );
 	}
 
 	/**
@@ -162,22 +175,26 @@ class MUErrorHandler {
 	}
 
 	/**
-	 * The 'plugins_loaded' hook.
+	 * The 'plugin_loaded' hook.
+	 *
+	 * @param string|mixed $plugin Plugin file path.
 	 *
 	 * @return void
 	 */
-	public function plugins_loaded(): void {
+	public function plugin_loaded( $plugin ): void {
+		$plugin = (string) $plugin;
+		$plugin = str_replace( DIRECTORY_SEPARATOR, '/', $plugin );
 
-		// Constants of plugins that destroy an error handler chain.
-		$constants = [
-			'QM_VERSION', // Query Monitor.
-			'AUTOMATOR_PLUGIN_VERSION', // Uncanny Automator.
+		// Plugins that destroy an error handler chain.
+		$plugin_files = [
+			'query-monitor/query-monitor.php', // Query Monitor.
+			'uncanny-automator/uncanny-automator.php', // Uncanny Automator.
 		];
 
 		$found = false;
 
-		foreach ( $constants as $constant ) {
-			if ( defined( $constant ) ) {
+		foreach ( $plugin_files as $plugin_file ) {
+			if ( false !== strpos( $plugin, $plugin_file ) ) {
 				$found = true;
 
 				break;
