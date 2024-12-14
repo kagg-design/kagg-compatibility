@@ -62,11 +62,27 @@ class MUErrorHandler {
 	private $handling = false;
 
 	/**
+	 * Class constructor.
+	 *
+	 * @param array $dirs   Directories from where errors should be suppressed.
+	 * @param int   $levels Error levels to suppress.
+	 */
+	public function __construct( array $dirs = [], int $levels = 0 ) {
+		$this->dirs   = $dirs;
+		$this->levels = $levels;
+	}
+
+	/**
 	 * Init class.
 	 *
 	 * @return void
+	 * @noinspection PhpUndefinedConstantInspection
 	 */
 	public function init(): void {
+		if ( defined( 'KAGG_DISABLE_ERROR_HANDLER' ) && KAGG_DISABLE_ERROR_HANDLER ) {
+			return;
+		}
+
 		$option     = get_option( self::OPTION, [] );
 		$this->dirs = empty( $option[ self::OPTION_KEY ] ) ? [] : explode( "\n", $option[ self::OPTION_KEY ] );
 
@@ -88,10 +104,10 @@ class MUErrorHandler {
 		/**
 		 * Allow modifying the levels of messages to suppress.
 		 *
-		 * @param bool $level Error levels of messages to suppress.
+		 * @param bool $levels Error levels of messages to suppress.
 		 */
 		$this->levels = (int) apply_filters(
-			'wpf_error_handler_level',
+			'kagg_compatibility_levels',
 			E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE | E_DEPRECATED | E_USER_DEPRECATED
 		);
 
@@ -109,50 +125,26 @@ class MUErrorHandler {
 	 * @return void
 	 */
 	private function init_hooks(): void {
-		// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
-		add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 1000 );
 		add_action( 'admin_head', [ $this, 'admin_head' ] );
+
+		add_action(
+			'action_scheduler_before_execute',
+			[ new self( $this->dirs, $this->levels ), 'set_error_handler' ],
+			1000
+		);
+
+		// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
+		add_action( 'plugin_loaded', [ $this, 'plugin_loaded' ] );
 	}
 
 	/**
 	 * Set error handler and save original.
-	 * To chain error handlers, we must not specify the second argument and catch all errors in our handler.
 	 */
-	private function set_error_handler(): void {
+	public function set_error_handler(): void {
 
+		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
 		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
-	}
-
-	/**
-	 * The 'plugins_loaded' hook.
-	 *
-	 * @return void
-	 */
-	public function plugins_loaded(): void {
-
-		// Constants of plugins that destroy an error handler chain.
-		$constants = [
-			'QM_VERSION', // Query Monitor.
-			'AUTOMATOR_PLUGIN_VERSION', // Uncanny Automator.
-		];
-
-		$found = false;
-
-		foreach ( $constants as $constant ) {
-			if ( defined( $constant ) ) {
-				$found = true;
-
-				break;
-			}
-		}
-
-		if ( ! $found ) {
-			return;
-		}
-
-		// Set this error handler after loading a plugin to chain its error handler.
-		$this->set_error_handler();
 	}
 
 	/**
@@ -172,6 +164,41 @@ class MUErrorHandler {
 			// phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.error_clear_lastFound
 			error_clear_last();
 		}
+	}
+
+	/**
+	 * The 'plugin_loaded' hook.
+	 *
+	 * @param string|mixed $plugin Plugin file path.
+	 *
+	 * @return void
+	 */
+	public function plugin_loaded( $plugin ): void {
+		$plugin = (string) $plugin;
+		$plugin = str_replace( DIRECTORY_SEPARATOR, '/', $plugin );
+
+		// Plugins that destroy an error handler chain.
+		$plugin_files = [
+			'query-monitor/query-monitor.php', // Query Monitor.
+			'uncanny-automator/uncanny-automator.php', // Uncanny Automator.
+		];
+
+		$found = false;
+
+		foreach ( $plugin_files as $plugin_file ) {
+			if ( false !== strpos( $plugin, $plugin_file ) ) {
+				$found = true;
+
+				break;
+			}
+		}
+
+		if ( ! $found ) {
+			return;
+		}
+
+		// Set this error handler after loading a plugin to chain its error handler.
+		( new self( $this->dirs, $this->levels ) )->set_error_handler( $this->dirs, $this->levels );
 	}
 
 	/**
@@ -227,10 +254,14 @@ class MUErrorHandler {
 	 * @noinspection PhpTernaryExpressionCanBeReplacedWithConditionInspection
 	 */
 	private function fallback_error_handler( array $args ): bool {
-		return null === $this->previous_error_handler ?
+		$result = null === $this->previous_error_handler ?
 			// Use standard error handler.
 			false :
 			(bool) call_user_func_array( $this->previous_error_handler, $args );
+
+		$this->handling = false;
+
+		return $result;
 	}
 
 	/**
