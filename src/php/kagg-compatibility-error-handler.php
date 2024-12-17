@@ -38,7 +38,7 @@ class MUErrorHandler {
 	 *
 	 * @var string[]
 	 */
-	private $dirs = [];
+	private $dirs;
 
 	/**
 	 * Previous error handler.
@@ -91,7 +91,7 @@ class MUErrorHandler {
 		/**
 		 * Allow modifying the list of dirs to suppress messages from.
 		 *
-		 * @param bool $dirs The list of dirs to suppress messages from.
+		 * @param array $dirs The list of dirs to suppress messages from.
 		 */
 		$this->dirs = (array) apply_filters( 'kagg_compatibility_dirs', $this->dirs );
 
@@ -104,7 +104,7 @@ class MUErrorHandler {
 		/**
 		 * Allow modifying the levels of messages to suppress.
 		 *
-		 * @param bool $levels Error levels of messages to suppress.
+		 * @param int $levels Error levels of messages to suppress.
 		 */
 		$this->levels = (int) apply_filters(
 			'kagg_compatibility_levels',
@@ -198,7 +198,7 @@ class MUErrorHandler {
 		}
 
 		// Set this error handler after loading a plugin to chain its error handler.
-		( new self( $this->dirs, $this->levels ) )->set_error_handler( $this->dirs, $this->levels );
+		( new self( $this->dirs, $this->levels ) )->set_error_handler();
 	}
 
 	/**
