@@ -39,6 +39,9 @@ Yes, you can!
 
 == Changelog ==
 
+= 2.4.1 =
+* Improved error handling with Uncanny Automator.
+
 = 2.4.0 =
 * Added KAGG_DISABLE_ERROR_HANDLER constant to disable the error handler.
 * Added blocking of WPForms error handlers to prevent conflicts.
