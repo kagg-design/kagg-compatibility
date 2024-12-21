@@ -3,7 +3,7 @@ Contributors: kaggdesign
 Tags: compatibility, development, deprecated, notice, warning
 Requires at least: 5.9
 Tested up to: 6.7
-Stable tag: 2.4.2
+Stable tag: 2.4.3
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -38,6 +38,10 @@ Yes, you can!
 * Join in on our [GitHub repository](https://github.com/kagg-design/kagg-compatibility)
 
 == Changelog ==
+
+= 2.4.3 =
+* Improved error handling with Query Monitor.
+* Improved error handling with Action Scheduler.
 
 = 2.4.2 =
 * Improved error handling with Uncanny Automator.

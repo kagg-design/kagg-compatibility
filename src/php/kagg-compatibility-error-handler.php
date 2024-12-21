@@ -122,15 +122,14 @@ class MUErrorHandler {
 			// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
 			add_action( 'plugin_loaded', [ $this, 'plugin_loaded' ], 500 );
 			add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 500 );
+			add_action(
+				'action_scheduler_before_execute',
+				[ new self( $this->dirs, $this->levels ), 'set_error_handler' ],
+				500
+			);
 		}
 
 		add_action( 'admin_head', [ $this, 'admin_head' ] );
-
-		add_action(
-			'action_scheduler_before_execute',
-			[ new self( $this->dirs, $this->levels ), 'set_error_handler' ],
-			1000
-		);
 	}
 
 	/**
@@ -173,6 +172,7 @@ class MUErrorHandler {
 		$plugin = str_replace( DIRECTORY_SEPARATOR, '/', $plugin );
 
 		// Plugins that destroy an error handler chain.
+		// These plugins set their error handler before plugin_loaded event, during an initial plugin load.
 		$plugin_files = [
 			'query-monitor/query-monitor.php', // Query Monitor.
 		];
@@ -202,8 +202,8 @@ class MUErrorHandler {
 	 */
 	public function plugins_loaded(): void {
 		// Constants of plugins that destroy an error handler chain.
+		// These plugins set their error handler on plugins_loaded event.
 		$constants = [
-			'QM_VERSION', // Query Monitor.
 			'AUTOMATOR_PLUGIN_VERSION', // Uncanny Automator.
 		];
 
