@@ -3,7 +3,7 @@ Contributors: kaggdesign
 Tags: compatibility, development, deprecated, notice, warning
 Requires at least: 5.9
 Tested up to: 6.7
-Stable tag: 2.4.0
+Stable tag: 2.4.2
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -39,7 +39,7 @@ Yes, you can!
 
 == Changelog ==
 
-= 2.4.1 =
+= 2.4.2 =
 * Improved error handling with Uncanny Automator.
 
 = 2.4.0 =
