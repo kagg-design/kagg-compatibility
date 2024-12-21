@@ -173,6 +173,7 @@ class MUErrorHandler {
 		$plugin = str_replace( DIRECTORY_SEPARATOR, '/', $plugin );
 
 		// Plugins that destroy an error handler chain.
+		// These plugins set their error handler before plugin_loaded event, during an initial plugin load.
 		$plugin_files = [
 			'query-monitor/query-monitor.php', // Query Monitor.
 		];
@@ -202,8 +203,8 @@ class MUErrorHandler {
 	 */
 	public function plugins_loaded(): void {
 		// Constants of plugins that destroy an error handler chain.
+		// These plugins set their error handler on plugins_loaded event.
 		$constants = [
-			'QM_VERSION', // Query Monitor.
 			'AUTOMATOR_PLUGIN_VERSION', // Uncanny Automator.
 		];
 
