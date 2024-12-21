@@ -39,6 +39,10 @@ Yes, you can!
 
 == Changelog ==
 
+= 2.4.3 =
+* Improved error handling with Query Monitor.
+* Improved error handling with Action Scheduler.
+
 = 2.4.2 =
 * Improved error handling with Uncanny Automator.
 
