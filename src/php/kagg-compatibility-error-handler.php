@@ -38,7 +38,7 @@ class MUErrorHandler {
 	 *
 	 * @var string[]
 	 */
-	private $dirs = [];
+	private $dirs;
 
 	/**
 	 * Previous error handler.
@@ -91,31 +91,22 @@ class MUErrorHandler {
 		/**
 		 * Allow modifying the list of dirs to suppress messages from.
 		 *
-		 * @param bool $dirs The list of dirs to suppress messages from.
+		 * @param array $dirs The list of dirs to suppress messages from.
 		 */
 		$this->dirs = (array) apply_filters( 'kagg_compatibility_dirs', $this->dirs );
 
 		$this->normalize_dirs();
 
-		if ( ! $this->dirs ) {
-			return;
-		}
-
 		/**
 		 * Allow modifying the levels of messages to suppress.
 		 *
-		 * @param bool $levels Error levels of messages to suppress.
+		 * @param int $levels Error levels of messages to suppress.
 		 */
 		$this->levels = (int) apply_filters(
 			'kagg_compatibility_levels',
 			E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE | E_DEPRECATED | E_USER_DEPRECATED
 		);
 
-		if ( 0 === $this->levels ) {
-			return;
-		}
-
-		$this->set_error_handler();
 		$this->init_hooks();
 	}
 
@@ -125,6 +116,14 @@ class MUErrorHandler {
 	 * @return void
 	 */
 	private function init_hooks(): void {
+		if ( $this->dirs && $this->levels ) {
+			$this->set_error_handler();
+
+			// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
+			add_action( 'plugin_loaded', [ $this, 'plugin_loaded' ], 500 );
+			add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 500 );
+		}
+
 		add_action( 'admin_head', [ $this, 'admin_head' ] );
 
 		add_action(
@@ -132,16 +131,12 @@ class MUErrorHandler {
 			[ new self( $this->dirs, $this->levels ), 'set_error_handler' ],
 			1000
 		);
-
-		// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
-		add_action( 'plugin_loaded', [ $this, 'plugin_loaded' ] );
 	}
 
 	/**
 	 * Set error handler and save original.
 	 */
 	public function set_error_handler(): void {
-
 		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
 		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
@@ -180,7 +175,6 @@ class MUErrorHandler {
 		// Plugins that destroy an error handler chain.
 		$plugin_files = [
 			'query-monitor/query-monitor.php', // Query Monitor.
-			'uncanny-automator/uncanny-automator.php', // Uncanny Automator.
 		];
 
 		$found = false;
@@ -198,7 +192,37 @@ class MUErrorHandler {
 		}
 
 		// Set this error handler after loading a plugin to chain its error handler.
-		( new self( $this->dirs, $this->levels ) )->set_error_handler( $this->dirs, $this->levels );
+		( new self( $this->dirs, $this->levels ) )->set_error_handler();
+	}
+
+	/**
+	 * The 'plugins_loaded' hook.
+	 *
+	 * @return void
+	 */
+	public function plugins_loaded(): void {
+		// Constants of plugins that destroy an error handler chain.
+		$constants = [
+			'QM_VERSION', // Query Monitor.
+			'AUTOMATOR_PLUGIN_VERSION', // Uncanny Automator.
+		];
+
+		$found = false;
+
+		foreach ( $constants as $constant ) {
+			if ( defined( $constant ) ) {
+				$found = true;
+
+				break;
+			}
+		}
+
+		if ( ! $found ) {
+			return;
+		}
+
+		// Set this error handler after loading a plugin to chain its error handler.
+		( new self( $this->dirs, $this->levels ) )->set_error_handler();
 	}
 
 	/**
