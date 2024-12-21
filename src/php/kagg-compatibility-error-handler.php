@@ -137,7 +137,6 @@ class MUErrorHandler {
 	 * Set error handler and save original.
 	 */
 	public function set_error_handler(): void {
-
 		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
 		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
@@ -202,7 +201,6 @@ class MUErrorHandler {
 	 * @return void
 	 */
 	public function plugins_loaded(): void {
-
 		// Constants of plugins that destroy an error handler chain.
 		$constants = [
 			'QM_VERSION', // Query Monitor.
