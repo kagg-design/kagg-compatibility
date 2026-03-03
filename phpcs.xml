@@ -4,9 +4,14 @@
 
 	<!-- What to scan -->
 	<file>.</file>
+	<!-- Exclude all dirs except needed -->
+	<exclude-pattern>^(?!.*/kagg-compatibility).*</exclude-pattern>
+	<exclude-pattern>*/\.git/*</exclude-pattern>
 	<exclude-pattern>*/\.github/*</exclude-pattern>
+	<exclude-pattern>*/\.idea/*</exclude-pattern>
 	<exclude-pattern>*/\.wordpress-org/*</exclude-pattern>
 	<exclude-pattern>*/assets/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
 	<exclude-pattern>*/languages/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 
@@ -15,17 +20,16 @@
 	<arg name="basepath" value="./"/><!-- Strip the file paths down to the relevant bit -->
 	<arg name="extensions" value="php"/>
 	<arg name="parallel" value="12"/><!-- Enables parallel processing when available for faster results. -->
-	<arg name="cache" value=".phpcs.cache"/>
 
 	<config name="installed_paths" value="vendor/phpcompatibility/php-compatibility,vendor/phpcompatibility/phpcompatibility-paragonie,vendor/phpcompatibility/phpcompatibility-wp,vendor/phpcsstandards/phpcsextra,vendor/phpcsstandards/phpcsutils,vendor/wp-coding-standards/wpcs"/>
-	<config name="testVersion" value="7.2-"/>
+	<config name="testVersion" value="7.4-"/>
 
 	<!-- Rules: Check PHP version compatibility -->
 	<rule ref="PHPCompatibility"/>
 	<rule ref="PHPCompatibilityWP"/>
 
 	<!-- Rules: WordPress Coding Standards -->
-	<config name="minimum_supported_wp_version" value="5.9"/>
+	<config name="minimum_supported_wp_version" value="6.0"/>
 	<rule ref="WordPress">
 		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.Found"/>
 		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed"/>
@@ -34,5 +38,14 @@
 		<!-- Rules to follow PSR4 -->
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+		<!-- Deprecated rules -->
+		<exclude name="Generic.Functions.CallTimePassByReference"/>
+	</rule>
+
+	<!-- Complexity rules -->
+	<rule ref="Generic.Metrics.CyclomaticComplexity">
+	</rule>
+
+	<rule ref="Generic.Metrics.NestingLevel">
 	</rule>
 </ruleset>

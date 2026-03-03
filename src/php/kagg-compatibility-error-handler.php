@@ -38,7 +38,7 @@ class MUErrorHandler {
 	 *
 	 * @var string[]
 	 */
-	private $dirs;
+	private array $dirs;
 
 	/**
 	 * Previous error handler.
@@ -52,14 +52,14 @@ class MUErrorHandler {
 	 *
 	 * @var int
 	 */
-	private $levels;
+	private int $levels;
 
 	/**
 	 * Whether the error handler is handling an error.
 	 *
 	 * @var bool
 	 */
-	private $handling = false;
+	private bool $handling = false;
 
 	/**
 	 * Class constructor.
@@ -84,7 +84,9 @@ class MUErrorHandler {
 		}
 
 		$option     = get_option( self::OPTION, [] );
-		$this->dirs = empty( $option[ self::OPTION_KEY ] ) ? [] : explode( "\n", $option[ self::OPTION_KEY ] );
+		$this->dirs = empty( $option[ self::OPTION_KEY ] )
+			? []
+			: (array) explode( "\n", $option[ self::OPTION_KEY ] );
 
 		$this->normalize_dirs();
 
@@ -133,7 +135,7 @@ class MUErrorHandler {
 	}
 
 	/**
-	 * Set error handler and save original.
+	 * Set the error handler and save the original.
 	 */
 	public function set_error_handler(): void {
 		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
@@ -143,7 +145,7 @@ class MUErrorHandler {
 
 	/**
 	 * Clear error caused by xdebug with PHP 8.1.
-	 * This error leads to adding .php-error class (margin-top: 2em;) to the #adminmenuwrap.
+	 * This error leads to adding .php-error class `margin-top: 2em;` to the #adminmenuwrap.
 	 *
 	 * @return void
 	 */
@@ -172,7 +174,7 @@ class MUErrorHandler {
 		$plugin = str_replace( DIRECTORY_SEPARATOR, '/', $plugin );
 
 		// Plugins that destroy an error handler chain.
-		// These plugins set their error handler before plugin_loaded event, during an initial plugin load.
+		// These plugins set their error handler before the plugin_loaded event, during an initial plugin load.
 		$plugin_files = [
 			'query-monitor/query-monitor.php', // Query Monitor.
 		];
@@ -240,7 +242,7 @@ class MUErrorHandler {
 		if ( $this->handling ) {
 			$this->handling = false;
 
-			// Prevent infinite recursion and fallback to standard error handler.
+			// Prevent infinite recursion and fallback to the standard error handler.
 			return false;
 		}
 

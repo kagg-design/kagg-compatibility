@@ -26,21 +26,21 @@ class Main {
 	 *
 	 * @var string
 	 */
-	private $error_handler_source;
+	private string $error_handler_source;
 
 	/**
 	 * Error handler destination path.
 	 *
 	 * @var string
 	 */
-	private $error_handler_destination;
+	private string $error_handler_destination;
 
 	/**
 	 * Settings instance.
 	 *
 	 * @var Settings
 	 */
-	private $settings;
+	private Settings $settings;
 
 	/**
 	 * Class constructor.

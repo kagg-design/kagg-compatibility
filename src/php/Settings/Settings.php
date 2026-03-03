@@ -25,21 +25,21 @@ class Settings implements SettingsInterface {
 	 *
 	 * @var array
 	 */
-	protected $menu_pages_classes;
+	protected array $menu_pages_classes;
 
 	/**
 	 * Menu pages and tabs in one flat array.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
-	protected $tabs = [];
+	protected ?array $tabs = [];
 
 	/**
 	 * Screen ids of pages and tabs.
 	 *
 	 * @var array
 	 */
-	private $screen_ids = [];
+	private array $screen_ids = [];
 
 	/**
 	 * Settings constructor.
@@ -59,7 +59,7 @@ class Settings implements SettingsInterface {
 		foreach ( $this->menu_pages_classes as $menu_page_classes ) {
 			$tab_classes = (array) $menu_page_classes;
 
-			// Allow specifying menu page as one class, without tabs.
+			// Allow specifying the menu page as one class, without tabs.
 			$page_class  = $tab_classes[0];
 			$tab_classes = array_slice( $tab_classes, 1 );
 
@@ -106,7 +106,7 @@ class Settings implements SettingsInterface {
 	 *
 	 * @return SettingsBase|null
 	 */
-	public function get_tab( $classname ): ?SettingsBase {
+	public function get_tab( string $classname ): ?SettingsBase {
 		$tabs = $this->tabs;
 
 		foreach ( $tabs as $tab ) {
@@ -173,7 +173,7 @@ class Settings implements SettingsInterface {
 	}
 
 	/**
-	 * Check whether option value equals to the compared value.
+	 * Check whether the option value equals to the compared value.
 	 *
 	 * @param string $key     Setting name.
 	 * @param string $compare Compared value.
@@ -191,7 +191,7 @@ class Settings implements SettingsInterface {
 	}
 
 	/**
-	 * Check whether option value is 'on' or just non-empty.
+	 * Check whether the option value is 'on' or just non-empty.
 	 *
 	 * @param string $key Setting name.
 	 *
