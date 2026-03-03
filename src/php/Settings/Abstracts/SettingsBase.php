@@ -12,7 +12,7 @@ namespace KAGG\Compatibility\Settings\Abstracts;
  *
  * This is an abstract class to create the settings page in any plugin.
  * It uses WordPress Settings API and general output any type of fields.
- * Similar approach is used in many plugins, including WooCommerce.
+ * A similar approach is used in many plugins, including WooCommerce.
  */
 abstract class SettingsBase {
 
@@ -36,35 +36,35 @@ abstract class SettingsBase {
 	 *
 	 * @var array
 	 */
-	protected $form_fields = [];
+	protected array $form_fields = [];
 
 	/**
 	 * Plugin options.
 	 *
 	 * @var array
 	 */
-	protected $settings;
+	protected array $settings;
 
 	/**
 	 * Tabs of this settings page.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
-	protected $tabs;
+	protected ?array $tabs;
 
 	/**
 	 * Prefix for minified files.
 	 *
 	 * @var string
 	 */
-	protected $min_prefix;
+	protected string $min_prefix;
 
 	/**
 	 * Fields and their print methods.
 	 *
 	 * @var array
 	 */
-	protected $fields;
+	protected array $fields;
 
 	/**
 	 * Get screen id.
@@ -95,7 +95,7 @@ abstract class SettingsBase {
 	abstract protected function option_name(): string;
 
 	/**
-	 * Get plugin base name.
+	 * Get a plugin base name.
 	 *
 	 * @return string
 	 */
@@ -258,7 +258,7 @@ abstract class SettingsBase {
 	 * @return bool
 	 */
 	protected function is_main_menu_page(): bool {
-		// The main menu page should have empty string as parent slug.
+		// The main menu page should have an empty string as a parent slug.
 		return ! $this->parent_slug();
 	}
 
@@ -273,7 +273,7 @@ abstract class SettingsBase {
 	}
 
 	/**
-	 * Get class name without a namespace.
+	 * Get a class name without a namespace.
 	 *
 	 * @return string
 	 */
@@ -315,7 +315,7 @@ abstract class SettingsBase {
 	}
 
 	/**
-	 * Initialise Settings.
+	 * Initialize Settings.
 	 *
 	 * Store all settings in a single database entry
 	 * and make sure the $settings array is either the default
@@ -325,13 +325,13 @@ abstract class SettingsBase {
 		$network_wide = get_site_option( $this->option_name() . self::NETWORK_WIDE, [] );
 
 		if ( empty( $network_wide ) ) {
-			$this->settings = get_option( $this->option_name(), null );
+			$settings = get_option( $this->option_name(), null );
 		} else {
-			$this->settings = get_site_option( $this->option_name(), null );
+			$settings = get_site_option( $this->option_name(), null );
 		}
 
-		$settings_exist                       = is_array( $this->settings );
-		$this->settings                       = (array) $this->settings;
+		$settings_exist                       = is_array( $settings );
+		$this->settings                       = (array) $settings;
 		$form_fields                          = $this->form_fields();
 		$network_wide_setting                 = array_key_exists( self::NETWORK_WIDE, $this->settings ) ?
 			$this->settings[ self::NETWORK_WIDE ] :
@@ -357,9 +357,9 @@ abstract class SettingsBase {
 	/**
 	 * Get all form fields.
 	 *
-	 * @return mixed
+	 * @return array
 	 */
-	protected function all_form_fields() {
+	protected function all_form_fields(): array {
 		$form_fields[] = $this->form_fields();
 		$tabs          = $this->tabs ?: [];
 
@@ -413,7 +413,7 @@ abstract class SettingsBase {
 	}
 
 	/**
-	 * Add settings' page to the menu.
+	 * Add the settings' page to the menu.
 	 *
 	 * @return void
 	 * @noinspection UnusedFunctionResultInspection
@@ -557,6 +557,8 @@ abstract class SettingsBase {
 	 * Show a tab link.
 	 *
 	 * @param SettingsBase $tab Tabs of the current settings page.
+	 *
+	 * @noinspection SelfClassReferencingInspection
 	 */
 	private function tab_link( SettingsBase $tab ): void {
 		$url    = menu_page_url( $this->option_page(), false );
@@ -578,6 +580,7 @@ abstract class SettingsBase {
 	 * @param SettingsBase $tab Tab of the current settings page.
 	 *
 	 * @return bool
+	 * @noinspection SelfClassReferencingInspection
 	 */
 	protected function is_tab_active( SettingsBase $tab ): bool {
 		$current_page_name = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
@@ -600,7 +603,7 @@ abstract class SettingsBase {
 	}
 
 	/**
-	 * Get page and tab names from referer.
+	 * Get page and tab names from the referer.
 	 *
 	 * @return array
 	 */
@@ -649,9 +652,10 @@ abstract class SettingsBase {
 	}
 
 	/**
-	 * Get active tab.
+	 * Get an active tab.
 	 *
 	 * @return SettingsBase
+	 * @noinspection SelfClassReferencingInspection
 	 */
 	protected function get_active_tab(): SettingsBase {
 		if ( ! empty( $this->tabs ) ) {
@@ -682,7 +686,7 @@ abstract class SettingsBase {
 		 *
 		 * @param array $fields Fields.
 		 */
-		$this->fields = apply_filters( 'kagg_settings_fields', $this->fields );
+		$this->fields = (array) apply_filters( 'kagg_settings_fields', $this->fields );
 
 		foreach ( $this->form_fields as $key => $field ) {
 			$field['field_id'] = $key;
@@ -699,7 +703,7 @@ abstract class SettingsBase {
 	}
 
 	/**
-	 * Print text/password field.
+	 * Print the text / password field.
 	 *
 	 * @param array $arguments Field arguments.
 	 */

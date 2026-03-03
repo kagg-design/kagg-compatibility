@@ -17,7 +17,7 @@ class AdminNotices {
 	 *
 	 * @var array
 	 */
-	private $notices = [];
+	private array $notices = [];
 
 	/**
 	 * AdminNotices constructor.

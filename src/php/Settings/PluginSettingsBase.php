@@ -23,7 +23,7 @@ abstract class PluginSettingsBase extends SettingsBase {
 
 	/**
 	 * Plugin name.
-	 * By default, the slug in snake case format.
+	 * By default, the slug is in snake case format.
 	 *
 	 * @var string
 	 */
@@ -31,11 +31,11 @@ abstract class PluginSettingsBase extends SettingsBase {
 
 	/**
 	 * Constant prefix.
-	 * By default, the slug in upper case and snake case format.
+	 * By default, the slug is in the upper case and snake case format.
 	 *
 	 * @var string
 	 */
-	protected $constant_prefix = '';
+	protected string $constant_prefix = '';
 
 	/**
 	 * Constructor.
@@ -103,7 +103,7 @@ abstract class PluginSettingsBase extends SettingsBase {
 	}
 
 	/**
-	 * Get plugin base name.
+	 * Get a plugin base name.
 	 *
 	 * @return string
 	 */
@@ -172,7 +172,7 @@ abstract class PluginSettingsBase extends SettingsBase {
 	}
 
 	/**
-	 * Show settings page.
+	 * Show the settings page.
 	 */
 	public function settings_page(): void {
 		?>
