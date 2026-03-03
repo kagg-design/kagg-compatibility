@@ -1,23 +1,25 @@
-name: CI
-
+name: KAGG Compatibility CI
 on: [ push, pull_request ]
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  run:
-    runs-on: ${{ matrix.os }}
-
+  cs_and_tests:
     strategy:
       matrix:
-        os: [ ubuntu-24.04 ]
-        php-version: [ '8.4' ]
+        os: [ ubuntu-latest ]
+        php-version: [ '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5' ]
+
+    runs-on: ${{ matrix.os }}
 
     name: PHP ${{ matrix.php-version }} on ${{ matrix.os }}
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install PHP
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
