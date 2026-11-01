@@ -13,7 +13,6 @@
 	<exclude-pattern>*/build/*</exclude-pattern>
 	<exclude-pattern>*/languages/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
-	<exclude-pattern>*/tests/*</exclude-pattern>
 
 	<!-- How to scan -->
 	<arg value="sp"/><!-- Show sniff and progress -->
@@ -40,6 +39,15 @@
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
 		<!-- Deprecated rules -->
 		<exclude name="Generic.Functions.CallTimePassByReference"/>
+	</rule>
+
+	<!-- Require this plugin's text domain for translated strings. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="kagg-compatibility"/>
+			</property>
+		</properties>
 	</rule>
 
 	<!-- Complexity rules -->

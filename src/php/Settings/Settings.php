@@ -3,10 +3,8 @@
  * Settings class file.
  *
  * @package kagg/compatibility
+ * @noinspection ContractViolationInspection
  */
-
-// phpcs:ignore Generic.Commenting.DocComment.MissingShort
-/** @noinspection ContractViolationInspection */
 
 namespace KAGG\Compatibility\Settings;
 

@@ -64,6 +64,16 @@ node --check assets/js/general.js
 node --check assets/js/general.min.js
 ```
 
+`composer test` runs the PHPUnit suite configured in `phpunit.xml`. To run
+one test, use `composer test -- --filter test_keeps_the_guard_active_for_all_recursive_entries`.
+The suite uses `WP_Mock` for WordPress functions and hooks, matching the unit-test
+setup in Cyr-To-Lat. No WordPress installation or database is needed.
+PHPUnit 9.6 keeps the tests compatible with PHP 7.4 and newer.
+
+In PhpStorm, select the shared **unit all** PHPUnit configuration and click Run.
+It uses the project's PHP interpreter, `vendor/autoload.php`, and `phpunit.xml`.
+Individual test classes and methods can also be run with the gutter Run button.
+
 `composer changelog` merges every readme release into `changelog.txt`, preserving
 archived versions. Keep all 2.x releases in `readme.txt` while preparing a 2.x release.
 Run `composer prepare` once to enable the staged-changelog pre-commit check.

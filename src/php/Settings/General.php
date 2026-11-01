@@ -94,7 +94,7 @@ class General extends PluginSettingsBase {
 		parent::settings_page();
 
 		submit_button(
-			__( 'Reset to Default', 'cyr2lat' ),
+			__( 'Reset to Default', 'kagg-compatibility' ),
 			'secondary',
 			'kagg-compatibility-reset-button',
 			false

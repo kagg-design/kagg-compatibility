@@ -4,12 +4,9 @@
  * WordPress Core, and some plugins.
  *
  * @package kagg/compatibility
+ * @noinspection PhpIllegalPsrClassPathInspection
+ * @noinspection AutoloadingIssuesInspection
  */
-
-// phpcs:disable Generic.Commenting.DocComment.MissingShort
-/** @noinspection PhpIllegalPsrClassPathInspection */
-/** @noinspection AutoloadingIssuesInspection */
-// phpcs:enable Generic.Commenting.DocComment.MissingShort
 
 namespace KAGG\Compatibility;
 
