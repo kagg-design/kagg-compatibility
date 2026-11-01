@@ -2,8 +2,8 @@
 Contributors: kaggdesign
 Tags: compatibility, development, deprecated, notice, warning
 Requires at least: 6.0
-Tested up to: 6.9
-Stable tag: 2.5.0
+Tested up to: 7.1
+Stable tag: 2.6.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -12,7 +12,7 @@ The plugin blocks error messages of any level from WordPress core, plugins, and 
 
 == Description ==
 
-[WordPress is not fully compatible with PHP 8.0-8.5](https://make.wordpress.org/core/handbook/references/php-compatibility-and-wordpress-versions/). The remaining known PHP 8.0+ issues are deprecation notices.
+WordPress core, plugins, and themes can emit notices and deprecation messages on newer PHP versions. See the [WordPress PHP compatibility guide](https://make.wordpress.org/core/handbook/references/php-compatibility-and-wordpress-versions/) for the current core support status.
 
 The same is related to many popular plugins such as WooCommerce, Jetpack, Gravity Forms, and others. Mainly, they produce deprecation notices from the Action Scheduler library.
 
@@ -38,6 +38,10 @@ Yes, you can!
 * Join in on our [GitHub repository](https://github.com/kagg-design/kagg-compatibility)
 
 == Changelog ==
+
+= 2.6.0 =
+* Corrected minimum-version notices to match the declared PHP 7.4 and WordPress 6.0 requirements.
+* Tested with WordPress 7.1.4.
 
 = 2.5.0 =
 * The minimum required PHP version is now 7.4.
@@ -105,3 +109,5 @@ Yes, you can!
 
 = 1.0.0 =
 * Initial release.
+
+[See changelog for all versions](https://github.com/kagg-design/kagg-compatibility/blob/master/changelog.txt).

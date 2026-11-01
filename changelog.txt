@@ -1,0 +1,70 @@
+= 2.6.0 =
+* Corrected minimum-version notices to match the declared PHP 7.4 and WordPress 6.0 requirements.
+* Tested with WordPress 7.1.4.
+
+= 2.5.0 =
+* The minimum required PHP version is now 7.4.
+* The minimum required WordPress version is now 6.0.
+
+= 2.4.3 =
+* Improved error handling with Query Monitor.
+* Improved error handling with Action Scheduler.
+
+= 2.4.2 =
+* Improved error handling with Uncanny Automator.
+
+= 2.4.0 =
+* Added KAGG_DISABLE_ERROR_HANDLER constant to disable the error handler.
+* Added blocking of WPForms error handlers to prevent conflicts.
+* Improved chaining of error handlers.
+* Changed wpf_error_handler_level filter name to kagg_compatibility_levels.
+* Fixed skipping suppression of some errors.
+
+= 2.3.0 =
+* Tested with PHP 8.4.
+* Tested with WordPress 6.7.
+
+= 2.2.0 =
+* Dropped support for PHP 7.0 and 7.1. The minimum required PHP version is now 7.2.
+* Add plugins and themes to the default settings.
+* Tested with WordPress 6.6.
+* Tested with WooCommerce 9.1.
+
+= 2.1.0 =
+* Tested with WordPress 6.5.
+* Tested with WooCommerce 8.6.
+
+= 2.0.3 =
+* Added normalization of dirs to handle errors from.
+* Added plugins' directories to the default list.
+
+= 2.0.2 =
+* Fixed the improper display of the "rate plugin" message on options.php.
+* Fixed a fatal error with improperly coded third-party error handlers.
+
+= 2.0.1 =
+* Fixed conflict with hCaptcha plugin.
+
+= 2.0.0 =
+* Tested with WordPress 6.4.
+* Added a settings page to specify the list of directories to process errors from.
+* Added the ability to chain error handlers.
+* Added compatibility with Query Monitor.
+* Added filter for folders.
+* Added filter for error levels.
+
+= 1.3.0 =
+* Tested with WordPress 6.3.
+
+= 1.2.0 =
+* Tested with WordPress 6.2.
+* Tested with PHP 8.2.
+
+= 1.1.0 =
+* Tested with WordPress 6.0.
+
+= 1.0.1 =
+* Fixed creation of the mu-plugin folder if it does not exist.
+
+= 1.0.0 =
+* Initial release.

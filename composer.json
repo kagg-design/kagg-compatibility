@@ -25,24 +25,42 @@
   "prefer-stable": true,
   "config": {
     "allow-plugins": {
-      "kylekatarnls/update-helper": true,
       "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "platform": {
+      "php": "7.4.33"
     }
   },
   "require-dev": {
-    "roave/security-advisories": "dev-latest",
-    "squizlabs/php_codesniffer": "^3.13.5",
+    "squizlabs/php_codesniffer": "^3.13.6",
     "phpcompatibility/php-compatibility": "^9.3.5",
     "phpcompatibility/phpcompatibility-wp": "^2.1.8",
-    "wp-coding-standards/wpcs": "^3.3.0"
+    "wp-coding-standards/wpcs": "^3.4.1",
+    "phpunit/phpunit": "^9.6.35",
+    "10up/wp_mock": "^1.1.1"
   },
   "autoload": {
     "psr-4": {
       "KAGG\\Compatibility\\": "src/php",
       "KAGG\\Compatibility\\Settings\\Abstracts\\": "src/php/Settings/Abstracts"
+    },
+    "exclude-from-classmap": [
+      "src/php/kagg-compatibility-error-handler.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "KAGG\\Compatibility\\Tests\\Unit\\": "tests/unit"
     }
   },
   "scripts": {
-    "phpcs": "vendor/bin/phpcs --colors --standard=phpcs.xml"
+    "phpcs": "vendor/bin/phpcs --colors --standard=phpcs.xml",
+    "test": "@php vendor/bin/phpunit",
+    "changelog": "@php .github/scripts/update-changelog.php",
+    "changelog:check": "@php .github/scripts/update-changelog.php --check",
+    "prepare": "git config core.hooksPath .githooks"
+  },
+  "require": {
+    "php": ">=7.4"
   }
 }

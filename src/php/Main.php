@@ -129,19 +129,19 @@ class Main {
 
 		$admin_notices = new AdminNotices();
 
-		// The plugin works with PHP 7.0+ only.
-		if ( PHP_VERSION_ID < 70000 ) {
+		// The plugin works with PHP 7.4+ only.
+		if ( PHP_VERSION_ID < 70400 ) {
 			$admin_notices->add_notice(
-				__( 'KAGG Compatibility requires PHP version 7.0 to run.', 'kagg-compatibility' ),
+				__( 'KAGG Compatibility requires PHP version 7.4 to run.', 'kagg-compatibility' ),
 				'notice notice-error'
 			);
 
 			return;
 		}
 
-		if ( version_compare( $wp_version, '5.9', '<' ) ) {
+		if ( version_compare( $wp_version, '6.0', '<' ) ) {
 			$admin_notices->add_notice(
-				__( 'KAGG Compatibility requires WordPress version 5.9 to run.', 'kagg-compatibility' ),
+				__( 'KAGG Compatibility requires WordPress version 6.0 to run.', 'kagg-compatibility' ),
 				'notice notice-error'
 			);
 		}

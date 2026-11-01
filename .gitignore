@@ -1,6 +1,8 @@
 vendor/
 *.lock
+!/composer.lock
 .DS_Store
 .idea/
 .phpcs.cache
+.phpunit.result.cache
 Thumbs.db

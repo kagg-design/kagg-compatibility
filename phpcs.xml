@@ -5,7 +5,6 @@
 	<!-- What to scan -->
 	<file>.</file>
 	<!-- Exclude all dirs except needed -->
-	<exclude-pattern>^(?!.*/kagg-compatibility).*</exclude-pattern>
 	<exclude-pattern>*/\.git/*</exclude-pattern>
 	<exclude-pattern>*/\.github/*</exclude-pattern>
 	<exclude-pattern>*/\.idea/*</exclude-pattern>
@@ -40,6 +39,15 @@
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
 		<!-- Deprecated rules -->
 		<exclude name="Generic.Functions.CallTimePassByReference"/>
+	</rule>
+
+	<!-- Require this plugin's text domain for translated strings. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="kagg-compatibility"/>
+			</property>
+		</properties>
 	</rule>
 
 	<!-- Complexity rules -->

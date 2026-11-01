@@ -1,17 +1,20 @@
 # A set of files and directories you probably don't want in your WordPress.org distribution
 
 # Directories
+/.aiassistant
 /.git
 /.github
 /.idea
 /.wordpress-org
 
 # Files
+/AGENTS.md
 /.DS_Store
 /.distignore
 /.editorconfig
 /.gitignore
 /.phpcs.cache
+/.phpunit.result.cache
 /README.md
 /Thumbs.db
 /auth.json
@@ -19,3 +22,8 @@
 /composer.lock
 /package.json
 /phpcs.xml
+/phpunit.xml
+/.run
+/.githooks
+/.gitattributes
+/tests

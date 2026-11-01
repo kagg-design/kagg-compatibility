@@ -1,31 +1,104 @@
 name: KAGG Compatibility CI
-on: [ push, pull_request ]
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '**/*.php'
+      - 'composer.*'
+      - 'phpcs.xml'
+      - 'phpunit.xml'
+      - 'assets/**'
+      - 'tests/**'
+      - '.github/**'
+      - '.githooks/**'
+      - '.gitattributes'
+      - '.distignore'
+      - 'readme.txt'
+      - 'changelog.txt'
+  pull_request:
+    paths:
+      - '**/*.php'
+      - 'composer.*'
+      - 'phpcs.xml'
+      - 'phpunit.xml'
+      - 'assets/**'
+      - 'tests/**'
+      - '.github/**'
+      - '.githooks/**'
+      - '.gitattributes'
+      - '.distignore'
+      - 'readme.txt'
+      - 'changelog.txt'
+
+permissions:
+  contents: read
+
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  cs_and_tests:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-        php-version: [ '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5' ]
-
-    runs-on: ${{ matrix.os }}
-
-    name: PHP ${{ matrix.php-version }} on ${{ matrix.os }}
-
+  phpcs:
+    name: PHP standards and release metadata
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+      - uses: ramsey/composer-install@4.0.0
+      - run: composer validate --strict
+      - run: composer audit
+      - run: composer phpcs
+      - run: composer changelog:check
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+  js:
+    name: JavaScript syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - run: node --check assets/js/general.js
+      - run: node --check assets/js/general.min.js
+
+  php_versions:
+    name: Resolve PHP versions
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.resolve.outputs.matrix }}
+    env:
+      FULL_PHP_MATRIX: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - name: Resolve PHP versions
+        id: resolve
+        run: |
+          if [ "$FULL_PHP_MATRIX" = "true" ]; then
+            echo 'matrix=["7.4","8.0","8.1","8.2","8.3","8.4","8.5"]' >> "$GITHUB_OUTPUT"
+          else
+            echo 'matrix=["7.4","8.5"]' >> "$GITHUB_OUTPUT"
+          fi
+
+  php:
+    name: PHP ${{ matrix.php-version }} lint and behavior
+    needs: php_versions
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ${{ fromJSON(needs.php_versions.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-
-      - name: Install dependencies with caching
-        uses: ramsey/composer-install@v3
-
-      - name: Run code sniffer
-        run: composer phpcs --colors
+          coverage: none
+      - uses: ramsey/composer-install@4.0.0
+      - name: PHP syntax
+        run: find plugin.php src tests .github/scripts -name '*.php' -print0 | xargs -0 -n1 php -l
+      - run: composer test
