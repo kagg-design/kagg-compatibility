@@ -1,7 +1,7 @@
 <?php
 /**
  * The error handler to suppress error messages from vendor directories,
- * WodPress Core, and some plugins.
+ * WordPress Core, and some plugins.
  *
  * @package kagg/compatibility
  */
@@ -12,6 +12,8 @@
 // phpcs:enable Generic.Commenting.DocComment.MissingShort
 
 namespace KAGG\Compatibility;
+
+use QM_Collectors;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -62,6 +64,13 @@ class MUErrorHandler {
 	private bool $handling = false;
 
 	/**
+	 * Temporarily replaced Query Monitor callbacks, one entry per nested action.
+	 *
+	 * @var array
+	 */
+	private array $qm_callbacks = [];
+
+	/**
 	 * Class constructor.
 	 *
 	 * @param array $dirs   Directories from where errors should be suppressed.
@@ -76,7 +85,6 @@ class MUErrorHandler {
 	 * Init class.
 	 *
 	 * @return void
-	 * @noinspection PhpUndefinedConstantInspection
 	 */
 	public function init(): void {
 		if ( defined( 'KAGG_DISABLE_ERROR_HANDLER' ) && KAGG_DISABLE_ERROR_HANDLER ) {
@@ -123,12 +131,19 @@ class MUErrorHandler {
 
 			// Some plugins destroy an error handler chain. Set the error handler again upon loading them.
 			add_action( 'plugin_loaded', [ $this, 'plugin_loaded' ], 500 );
-			add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 500 );
+			add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ], 1000 );
 			add_action(
 				'action_scheduler_before_execute',
 				[ new self( $this->dirs, $this->levels ), 'set_error_handler' ],
 				500
 			);
+
+			// Translation notices also reach Query Monitor directly, bypassing the PHP error handler.
+			if ( version_compare( $GLOBALS['wp_version'], '6.7', '>=' ) ) {
+				add_action( 'doing_it_wrong_run', [ $this, 'action_doing_it_wrong_run' ], 0, 3 );
+				add_action( 'doing_it_wrong_run', [ $this, 'restore_doing_it_wrong_collector' ], PHP_INT_MAX );
+				add_filter( 'doing_it_wrong_trigger_error', [ $this, 'filter_doing_it_wrong_trigger_error' ], 10, 4 );
+			}
 		}
 
 		add_action( 'admin_head', [ $this, 'admin_head' ] );
@@ -140,7 +155,16 @@ class MUErrorHandler {
 	public function set_error_handler(): void {
 		// To chain error handlers, we must not specify the second argument and catch all errors in our handler.
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
-		$this->previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
+		$previous_error_handler = set_error_handler( [ $this, 'error_handler' ] );
+
+		if ( [ $this, 'error_handler' ] === $previous_error_handler ) {
+			// Keep the existing fallback when the same instance is already installed.
+			restore_error_handler();
+
+			return;
+		}
+
+		$this->previous_error_handler = $previous_error_handler;
 	}
 
 	/**
@@ -171,7 +195,7 @@ class MUErrorHandler {
 	 */
 	public function plugin_loaded( $plugin ): void {
 		$plugin = (string) $plugin;
-		$plugin = str_replace( DIRECTORY_SEPARATOR, '/', $plugin );
+		$plugin = str_replace( '\\', '/', $plugin );
 
 		// Plugins that destroy an error handler chain.
 		// These plugins set their error handler before the plugin_loaded event, during an initial plugin load.
@@ -206,6 +230,7 @@ class MUErrorHandler {
 		// Constants of plugins that destroy an error handler chain.
 		// These plugins set their error handler on plugins_loaded event.
 		$constants = [
+			'QM_VERSION', // Query Monitor can replace its handler during plugins_loaded too.
 			'AUTOMATOR_PLUGIN_VERSION', // Uncanny Automator.
 		];
 
@@ -240,35 +265,142 @@ class MUErrorHandler {
 	 */
 	public function error_handler( int $level, string $message, string $file, int $line ): bool {
 		if ( $this->handling ) {
-			$this->handling = false;
-
 			// Prevent infinite recursion and fallback to the standard error handler.
 			return false;
 		}
 
 		$this->handling = true;
 
-		if ( ( $level & $this->levels ) === 0 ) {
-			// Not served error level, use fallback error handler.
+		try {
+			if ( ( $level & $this->levels ) !== 0 && $this->is_suppressed_file( $file ) ) {
+				// Suppress configured error levels from this directory.
+				return true;
+			}
+
+			// Not a configured error level or directory, use the fallback error handler.
 			// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
 			return $this->fallback_error_handler( func_get_args() );
+		} finally {
+			$this->handling = false;
+		}
+	}
+
+	/**
+	 * Temporarily filter Query Monitor's collector for selected translation notices.
+	 *
+	 * @param string $function_name The function that was called.
+	 * @param string $message       A message explaining what has been done incorrectly.
+	 * @param string $version       The WordPress version where the message was added.
+	 *
+	 * @return void
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	public function action_doing_it_wrong_run( string $function_name, $message, $version ): void {
+		$this->qm_callbacks[] = null;
+
+		if ( ! class_exists( 'QM_Collectors' ) || ! $this->is_just_in_time_error( $function_name ) ) {
+			return;
 		}
 
-		// Process error.
-		$normalized_file = str_replace( DIRECTORY_SEPARATOR, '/', $file );
+		$collector = QM_Collectors::get( 'doing_it_wrong' );
 
-		foreach ( $this->dirs as $dir ) {
-			if ( str_contains( $normalized_file, $dir ) ) {
-				$this->handling = false;
+		if ( null === $collector ) {
+			return;
+		}
 
-				// Suppress deprecated errors from this directory.
+		$callback = [ $collector, 'action_doing_it_wrong_run' ];
+		$priority = has_action( 'doing_it_wrong_run', $callback );
+
+		if ( false === $priority || $priority <= 0 || PHP_INT_MAX === $priority ) {
+			return;
+		}
+
+		// A wrapper preserves unrelated notices even when another callback triggers a nested action.
+		$wrapper = function ( $function_name, $message, $version ) use ( $callback ): void {
+			if ( ! $this->is_just_in_time_error( (string) $function_name ) ) {
+				$callback( $function_name, $message, $version );
+			}
+		};
+
+		$this->qm_callbacks[ count( $this->qm_callbacks ) - 1 ] = [ $callback, $wrapper, $priority ];
+		remove_action( 'doing_it_wrong_run', $callback, $priority );
+		add_action( 'doing_it_wrong_run', $wrapper, $priority, 3 );
+	}
+
+	/**
+	 * Restore only the collector callback replaced for the current action.
+	 *
+	 * @return void
+	 */
+	public function restore_doing_it_wrong_collector(): void {
+		$callbacks = array_pop( $this->qm_callbacks );
+
+		if ( null === $callbacks ) {
+			return;
+		}
+
+		[ $callback, $wrapper, $priority ] = $callbacks;
+		remove_action( 'doing_it_wrong_run', $wrapper, $priority );
+		add_action( 'doing_it_wrong_run', $callback, $priority, 3 );
+	}
+
+	/**
+	 * Suppress selected early translation notices before WordPress triggers a PHP error.
+	 *
+	 * @param bool|mixed $trigger       Whether to trigger the error.
+	 * @param string     $function_name The function that was called.
+	 * @param string     $message       A message explaining what has been done incorrectly.
+	 * @param string     $version       The WordPress version where the message was added.
+	 *
+	 * @return bool
+	 * @noinspection PhpMissingParamTypeInspection
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	public function filter_doing_it_wrong_trigger_error( $trigger, string $function_name, $message, $version ): bool {
+		return ! $this->is_just_in_time_error( $function_name ) && $trigger;
+	}
+
+	/**
+	 * Whether an early translation notice originates in a configured directory.
+	 *
+	 * @param string $function_name The function that was called.
+	 *
+	 * @return bool
+	 */
+	private function is_just_in_time_error( string $function_name ): bool {
+		if ( '_load_textdomain_just_in_time' !== $function_name || ( E_USER_NOTICE & $this->levels ) === 0 ) {
+			return false;
+		}
+
+		// Inspect file paths only: translated messages and text domains need not match directory names.
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace
+		foreach ( debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS ) as $frame ) {
+			if ( isset( $frame['file'] ) && __FILE__ !== $frame['file'] && $this->is_suppressed_file( $frame['file'] ) ) {
 				return true;
 			}
 		}
 
-		// Not served directory, use fallback error handler.
-		// phpcs:ignore PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection
-		return $this->fallback_error_handler( func_get_args() );
+		return false;
+	}
+
+	/**
+	 * Whether a file belongs to a configured directory.
+	 *
+	 * @param string $file File path.
+	 *
+	 * @return bool
+	 */
+	private function is_suppressed_file( string $file ): bool {
+		$normalized_file = str_replace( '\\', '/', $file );
+
+		foreach ( $this->dirs as $dir ) {
+			if ( false !== strpos( $normalized_file, $dir ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -280,14 +412,10 @@ class MUErrorHandler {
 	 * @noinspection PhpTernaryExpressionCanBeReplacedWithConditionInspection
 	 */
 	private function fallback_error_handler( array $args ): bool {
-		$result = null === $this->previous_error_handler ?
+		return null === $this->previous_error_handler ?
 			// Use standard error handler.
 			false :
 			(bool) call_user_func_array( $this->previous_error_handler, $args );
-
-		$this->handling = false;
-
-		return $result;
 	}
 
 	/**
@@ -299,7 +427,7 @@ class MUErrorHandler {
 		$this->dirs = array_filter(
 			array_map(
 				static function ( $dir ) {
-					return str_replace( DIRECTORY_SEPARATOR, '/', trim( $dir ) );
+					return is_string( $dir ) ? str_replace( '\\', '/', trim( $dir ) ) : '';
 				},
 				$this->dirs
 			)
