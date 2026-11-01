@@ -19,3 +19,6 @@
 /composer.lock
 /package.json
 /phpcs.xml
+/.githooks
+/.gitattributes
+/tests

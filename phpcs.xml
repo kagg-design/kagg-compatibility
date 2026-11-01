@@ -5,7 +5,6 @@
 	<!-- What to scan -->
 	<file>.</file>
 	<!-- Exclude all dirs except needed -->
-	<exclude-pattern>^(?!.*/kagg-compatibility).*</exclude-pattern>
 	<exclude-pattern>*/\.git/*</exclude-pattern>
 	<exclude-pattern>*/\.github/*</exclude-pattern>
 	<exclude-pattern>*/\.idea/*</exclude-pattern>
@@ -14,6 +13,7 @@
 	<exclude-pattern>*/build/*</exclude-pattern>
 	<exclude-pattern>*/languages/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/tests/*</exclude-pattern>
 
 	<!-- How to scan -->
 	<arg value="sp"/><!-- Show sniff and progress -->

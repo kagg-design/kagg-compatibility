@@ -10,7 +10,7 @@
  * Plugin Name:       KAGG Compatibility
  * Plugin URI:        https://wordpress.org/plugins/kagg-compatibility/
  * Description:       Blocks error messages of any levels from WordPress core, plugins, and themes.
- * Version:           2.5.0
+ * Version:           2.6.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            KAGG Design
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin version.
  */
-define( 'KAGG_COMPATIBILITY_VERSION', '2.5.0' );
+define( 'KAGG_COMPATIBILITY_VERSION', '2.6.0' );
 
 /**
  * Path to the plugin dir.

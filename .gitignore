@@ -1,5 +1,6 @@
 vendor/
 *.lock
+!/composer.lock
 .DS_Store
 .idea/
 .phpcs.cache
