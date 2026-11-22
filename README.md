@@ -88,5 +88,5 @@ wp --path=/path/to/wordpress --skip-plugins --skip-themes eval-file /path/to/kag
 
 This smoke check uses in-memory plugin options and a temporary mu-plugin payload.
 It does not cover browser UI or third-party plugins running together.
-CI checks all supported stable PHP versions on every PR; pushes use PHP 7.4 and 8.5.
+CI checks all supported stable PHP versions through PHP 8.6 on every PR; pushes use PHP 7.4 and 8.6.
 Publishing remains a separate action through the existing GitHub release workflow.

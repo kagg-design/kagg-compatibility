@@ -1,3 +1,7 @@
+= 2.7.0 =
+* Tested with WordPress 7.2.
+* Tested with PHP 8.6.
+
 = 2.6.0 =
 * Corrected minimum-version notices to match the declared PHP 7.4 and WordPress 6.0 requirements.
 * Tested with WordPress 7.1.4.
