@@ -40,7 +40,7 @@ Yes, you can!
 == Changelog ==
 
 = 2.7.0 =
-* Tested with WordPress 7.2-RC2-65732.
+* Tested with WordPress 7.2.
 * Tested with PHP 8.6.
 
 = 2.6.0 =
