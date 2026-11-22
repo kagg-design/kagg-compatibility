@@ -2,8 +2,8 @@
 Contributors: kaggdesign
 Tags: compatibility, development, deprecated, notice, warning
 Requires at least: 6.0
-Tested up to: 7.1
-Stable tag: 2.6.0
+Tested up to: 7.2
+Stable tag: 2.7.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -38,6 +38,10 @@ Yes, you can!
 * Join in on our [GitHub repository](https://github.com/kagg-design/kagg-compatibility)
 
 == Changelog ==
+
+= 2.7.0 =
+* Tested with WordPress 7.2-RC2-65732.
+* Tested with PHP 8.6.
 
 = 2.6.0 =
 * Corrected minimum-version notices to match the declared PHP 7.4 and WordPress 6.0 requirements.
